@@ -1,0 +1,6 @@
+SEANCE 1
+
+
+Lors de la première séance de notre projet, nous avons reçu des informations plus détaillées sur le sujet. Nous avons ensuite rédigé le cahier des charges afin de définir précisément les objectifs et les contraintes du système.
+
+Le travail a été réparti en binômes. Avec Baptiste, nous avons pris en charge la partie liée au serveur web destiné à héberger le site du projet. Après comparaison de plusieurs solutions, nous avons choisi Firebase, qui assure la gestion du backend de manière automatique. Pour la partie frontend, nous avons décidé d’utiliser Vue.js avec TypeScript.
