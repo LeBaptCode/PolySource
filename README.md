@@ -1,4 +1,4 @@
-<img width="880" height="202" alt="image" src="https://github.com/user-attachments/assets/09ccd1ce-4e50-42a4-befe-d41a16591517" /># PolySource
+PolySource
 Année 2025-2026
 \n Projet ELSE4 FISA Polytech Nice Sophia
 \n Objectif:
