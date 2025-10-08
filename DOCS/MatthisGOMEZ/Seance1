@@ -9,7 +9,11 @@ Avec Andy nous allons commencer sur la partie hardware et Ibadete et Baptiste vo
 Installation des drivers et autres libraries pour pouvoir commencer à travailler sur l'esp32 lora wifi via Arduino IDE.
 Installation tellement longue, 45 minutes.
 
-Je vais commencer par tester le sonar HC SR04.
+Je vais commencer par tester le sonar HC SR04 en 115200 baud.
 Attribution des pins : sonar alimenté en 5V, Trigger GPIO 26, Echo GPIO 25 et GND.
+Test concluant mais présence de caractères spéciaux sur le serial monitor (le professeur nous a affirmé que le problème venait de 
+l'esp et qu'un nouveau dispositif a été commandé).
+
+
 Modem 1 USR-DR154 : alimenté en 5V, RX, TX  reliés à l'esp32
 
