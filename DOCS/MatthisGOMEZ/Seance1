@@ -1,0 +1,15 @@
+Rapport de la première séance concernant le projet 5, Mercedi 8 Octobre.
+
+Découverte du sujet et du matériel mis à disposition. On commence tout d'abord par établir une liste de toutes les tâches à accomplir,
+puis on se sépare en deux équipes de deux et on se réparti la charge de travail.
+Avec Andy nous allons commencer sur la partie hardware et Ibadete et Baptiste vont commencer par la partie Software.
+
+
+
+Installation des drivers et autres libraries pour pouvoir commencer à travailler sur l'esp32 lora wifi via Arduino IDE.
+Installation tellement longue, 45 minutes.
+
+Je vais commencer par tester le sonar HC SR04.
+Attribution des pins : sonar alimenté en 5V, Trigger GPIO 26, Echo GPIO 25 et GND.
+Modem 1 USR-DR154 : alimenté en 5V, RX, TX  reliés à l'esp32
+
