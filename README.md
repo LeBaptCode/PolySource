@@ -1,9 +1,9 @@
 PolySource
 Année 2025-2026
-\n Projet ELSE4 FISA Polytech Nice Sophia
-\n Objectif:
-\n Monitoring d'une source 
-\_- mesure de hauteur d'eau
+Projet ELSE4 FISA Polytech Nice Sophia
+Objectif:
+- Monitoring d'une source 
+- mesure de hauteur d'eau
 - mesure de débit
 - détection de trop plein
 - publication des mesures sur page web (GSM, MQTT, ...)
