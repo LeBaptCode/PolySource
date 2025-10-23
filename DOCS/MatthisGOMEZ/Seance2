@@ -4,3 +4,21 @@ Datasheet sonar HC SR04 : https://cdn.sparkfun.com/datasheets/Sensors/Proximity/
 Datasheet FL-608 60L/min: https://www.digiten.shop/products/digiten-g3-4-water-flow-hall-sensor-switch-flow-meter-1-60l-min
 Datasheet GSM : https://www.pusr.com/support/downloads/Specification-USR-DR154-E-spec.html
 ESP32 Heltec Wifi Lora
+
+Revu des tests softs, nous sommes arrivés à faire fonctionner à la fois le sonar et le debit-mètre en essayant plusieurs GPIO disponibles.
+bilan des pins à l'heure actuelle : 
+
+Débitmètre GPIO23
+Sonar HC-SR04	TRIG (Sortie)	GPIO32
+Sonar HC-SR04	ECHO (Entrée)	GPIO35
+Modem USR-DR154	TX (vers RX Modem)	GPIO13
+Modem USR-DR154	RX (depuis TX Modem)	GPIO12
+
+Il manque encore a affuter le calibrage du sonar.
+
+Concernant le test du gsm pour la communication :  Power Supply 5-24V DC, 12V/1A is commanded (sur la datasheet)
+On ne veut pas endommager la carte esp32, donc on attendra d'avoir accès à une batterie pour s'en occuper.
+
+Alimentation batterie 9-12V ? Donc il faudra un diviseur de tension entre le gsm et l'esp étant donné que la batterie alimentera les deux dispositifs
+Sinon, deux batterie, une 5V et une 9-12V, et on ne fait circuler que de la data entre le usr et l'esp
+
