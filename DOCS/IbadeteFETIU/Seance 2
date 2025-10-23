@@ -1,1 +1,18 @@
-Pendant la deuxième séance, on a continué le travail séparé en binomes. Aves Ba
+Lors de cette séance, je me suis concentrée sur la partie frontend du projet.
+Comme mon rôle est de m’occuper du site web avec Vue.js, j’ai commencé par me renseigner sur ce framework et à faire plusieurs tutoriels pour apprendre à l’utiliser.
+
+J’ai d’abord installé Node.js et Vue CLI, puis créé un premier projet test pour comprendre la structure d’une application Vue (les fichiers App.vue, main.ts, le dossier components, etc.).
+J’ai appris à créer des composants simples, à afficher des données avec les doubles accolades {{ }}, à utiliser des conditions (v-if) et des boucles (v-for), et à gérer des événements avec @click.
+
+J’ai aussi regardé comment on peut connecter un projet Vue.js à Firebase, puisque c’est le service qu’on utilise pour héberger les données.
+J’ai commencé à tester l’installation de Chart.js pour afficher des graphiques plus tard, et j’ai essayé quelques éléments de design avec Vuetify.
+
+Pour la suite, je prévois de :
+
+créer une page “Dashboard” avec des données simulées pour tester l’affichage,
+
+ensuite relier cette page à Firebase pour afficher les vraies mesures envoyées par l’ESP32,
+
+et enfin ajouter les graphiques faits par Baptiste sur notre site.
+
+Cette séance m’a permis de bien comprendre les bases de Vue.js et de voir comment on pourra construire notre interface web petit à petit.
