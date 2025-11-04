@@ -3,3 +3,8 @@ Cependant certains faux contacts donnent des valeurs absurdes, donc il faudra li
 impossibles à l'aide d'un soft.
 
 Test gsm, avec générateur labo et pince croco, en 9-12V.
+
+Il faut également que l'on soit sure de l'OS se trouvant dans la carte SIM.
+
+Problème sur l'esp : impossible de flasher quoi que ce soit même avec le setup le plus simple possible, même en vérifiant le driver
+et le port.
