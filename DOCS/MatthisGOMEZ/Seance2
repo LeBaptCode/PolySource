@@ -19,6 +19,11 @@ Il manque encore a affuter le calibrage du sonar.
 Concernant le test du gsm pour la communication :  Power Supply 5-24V DC, 12V/1A is commanded (sur la datasheet)
 On ne veut pas endommager la carte esp32, donc on attendra d'avoir accès à une batterie pour s'en occuper.
 
-Alimentation batterie 9-12V ? Donc il faudra un diviseur de tension entre le gsm et l'esp étant donné que la batterie alimentera les deux dispositifs
-Sinon, deux batterie, une 5V et une 9-12V, et on ne fait circuler que de la data entre le usr et l'esp
+Alimentation batterie 9-12V ? Deux solutions : alimenter en 12V et utiliser un régulateur de tension (donc il faudra en commander un),
+ou se servir directement d'un générateur labo.
+Objectifs prochaine séance : 
+Réussir à envoyer une data avec le gsm, si possible l'interpreter voir même de faire un test avec sonar/debit-mètre/gsm qui fonctionnent
+et envoient de la data en simultanée ( selon le temps que cela va nous prendre).
+
+
 
