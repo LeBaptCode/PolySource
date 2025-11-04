@@ -3,7 +3,7 @@ Seance 2 Compte Rendu
 Datasheet sonar HC SR04 : https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf
 Datasheet FL-608 60L/min: https://www.digiten.shop/products/digiten-g3-4-water-flow-hall-sensor-switch-flow-meter-1-60l-min
 Datasheet GSM : https://www.pusr.com/support/downloads/Specification-USR-DR154-E-spec.html
-ESP32 Heltec Wifi Lora
+Datasheet ESP32 Heltec Wifi Lora : https://heltec.org/project/wifi-lora-32-v4/
 
 Revu des tests softs, nous sommes arrivés à faire fonctionner à la fois le sonar et le debit-mètre en essayant plusieurs GPIO disponibles.
 bilan des pins à l'heure actuelle : 
