@@ -1,0 +1,23 @@
+Aujourd’hui, j’ai travaillé sur la partie frontend de notre site web.
+J’ai d’abord réfléchi à l’organisation générale du site, pour avoir une idée claire de ce à quoi il va ressembler une fois terminé.
+L’idée est d’avoir plusieurs blocs d’informations :
+
+un graphique qui montre l’évolution des mesures du sonar (la hauteur d’eau),
+
+un affichage de la hauteur actuelle et de la variation (He – Hmax),
+
+un graphique du débit mesuré par le débitmètre,
+
+un bloc pour la capacité (%) et la tension (V) de la batterie,
+
+et enfin une alerte de débordement si la hauteur dépasse la limite (d > dmax).
+
+Pendant la séance, j’ai surtout travaillé sur la première partie du site, celle qui affiche la hauteur actuelle de l’eau.
+J’ai commencé à créer ce bloc en utilisant Vue.js, avec un peu de CSS et de HTML pour la mise en forme.
+Je débute encore avec Vue, donc j’ai pris un peu de temps pour comprendre comment organiser le code et comment tout s’affiche à l’écran.
+
+Malheureusement, le site a buggé à la fin de la séance et la page ne s’affichait plus correctement.
+Je pense que c’est un petit problème dans le code ou un mauvais lien d’import.
+Lors de la prochaine séance, je vais essayer de corriger ce bug et continuer à construire les autres blocs du site (le graphique et le suivi du débit notamment).
+
+Même si ça n’a pas encore tout à fait marché, cette séance m’a permis de mieux comprendre le fonctionnement de Vue.js et de commencer à construire la base visuelle de notre projet.
