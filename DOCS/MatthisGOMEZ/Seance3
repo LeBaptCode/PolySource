@@ -8,3 +8,9 @@ Il faut également que l'on soit sure de l'OS se trouvant dans la carte SIM.
 
 Problème sur l'esp : impossible de flasher quoi que ce soit même avec le setup le plus simple possible, même en vérifiant le driver
 et le port.
+
+J'en ai profité pour ajouter cette fameuse fonction de lissage moyenne glissante pour les résultats du sonar.
+
+Le problème n'a pas su être résolu, on utilisera un autre ESP à l'avenir.
+Objectifs prochaine séance : 
+Faire circuler de la data entre le gsm et l'esp.
