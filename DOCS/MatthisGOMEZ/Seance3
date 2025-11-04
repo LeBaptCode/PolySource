@@ -1,0 +1,5 @@
+Test Sonar Seance 3, test concluant, sonar bien calibré en cm.
+Cependant certains faux contacts donnent des valeurs absurdes, donc il faudra lisser les résultats en excluant les valeurs
+impossibles à l'aide d'un soft.
+
+Test gsm, avec générateur labo et pince croco, en 9-12V.
