@@ -14,7 +14,7 @@ Il ne manque qu'à se mettre d'accord avec l'autre binome sur comment gérer l'�
 On envisage d'utiliser du HTTPD.
 
 On profite de l'avance que l'on a pour tester l'envoie de données en série entre le gsm, l'esp32 et le sonar et le débitmètre.
-Test OK
+Valeurs aberrantes mais communication réussie, on pense à un faux contact via-à-vis de la connexion filaire avec le sonar.
 
 Objectifs prochaine séance : 
 Finalisation du serveur et réception des données
