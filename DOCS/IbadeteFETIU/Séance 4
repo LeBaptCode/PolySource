@@ -1,0 +1,17 @@
+Lors de cette séance, j’ai changé d’outil pour la partie affichage du projet.
+Au départ, on avait prévu de créer le site web avec Vue.js pour afficher les données venant de l’ESP32. Après quelques recherches, j’ai découvert Grafana, qui est un outil beaucoup plus adapté pour visualiser des données en temps réel sous forme de graphiques, jauges et tableaux.
+
+Grafana permet aussi d’afficher facilement les mesures provenant d’une base de données (comme InfluxDB) sans avoir à tout coder soi-même. Après en avoir parlé avec le groupe, on a décidé d’utiliser Grafana à la place de Vue.js pour la partie visualisation.
+
+Pendant cette séance, j’ai donc passé du temps à comprendre comment fonctionne Grafana :
+
+comment créer un dashboard,
+
+comment ajouter une source de données pour tester,
+
+et comment utiliser différents types de panneaux (panels) pour afficher les mesures.
+
+J’ai aussi commencé à créer le premier bloc d’affichage avec Canvas, un plugin intégré à Grafana qui permet de dessiner et personnaliser l’apparence des panneaux.
+Ce premier bloc correspond à la hauteur d’eau actuelle, que j’ai commencé à représenter sous forme d’un carré avec un fond bleu clair et la valeur affichée au centre.
+
+L’objectif pour la prochaine séance sera de terminer ce premier affichage et de commencer les autres blocs (évolution de la hauteur, débit, batterie et alerte de trop-plein).
