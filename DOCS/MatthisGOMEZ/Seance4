@@ -5,5 +5,19 @@ Test concluant en Relais Série Bidirectionnel via le protocole AT pour vérifie
 On sait donc que désormais on peut commander via une liaison filaire entre le modem entre l'ESP32 et le GSM.
 
 Test du sonar avec fonction de lissage sur le nouvel esp:
+Test OK
 
 Objectif suivant : définir le point d'accès réseau entre GSM et serveur
+
+Nous avons réussi à configuré le GSM via le logiciel USR CAT1
+Il ne manque qu'à se mettre d'accord avec l'autre binome sur comment gérer l'échange de data entre le gsm et le serveur.
+On envisage d'utiliser du HTTPD.
+
+On profite de l'avance que l'on a pour tester l'envoie de données en série entre le gsm, l'esp32 et le sonar et le débitmètre.
+Test OK
+
+Objectifs prochaine séance : 
+Finalisation du serveur et réception des données
+Interprétation des données
+Mise en place de valeurs limites concernant le sonar et le débitmètre avant d'envoyer un signal,
+pour une question de cohérence avec le sujet.
