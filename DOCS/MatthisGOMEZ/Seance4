@@ -1,0 +1,9 @@
+Objectifs prochaine séance : 
+Faire circuler de la data entre le gsm et l'esp.
+
+Test concluant en Relais Série Bidirectionnel via le protocole AT pour vérifier que le modem répond.
+On sait donc que désormais on peut commander via une liaison filaire entre le modem entre l'ESP32 et le GSM.
+
+Test du sonar avec fonction de lissage sur le nouvel esp:
+
+Objectif suivant : définir le point d'accès réseau entre GSM et serveur
