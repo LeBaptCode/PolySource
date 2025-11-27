@@ -14,4 +14,8 @@ Nouveau problème identifié : 'net reg fail' lié peut-être à la carte Sim ma
 
 Nous avons également vérifié si les bandes de fréquence de l'USR correspondent aux bandes françaises de free, c'est le cas.
 
-
+Concernant ce net reg fail, nous pensions que nous nécessitions plus de jus mais ce n'est pas le cas, le problème étant lié à l'absence
+d'antenne.
+Test avec antenne : 
+Test concluant, il faut une centaine de secondes pour que la liaison se fasse mais à partir de là les messages circulent 
+en quelques secondes à peine. Le gsm reçoit les messages, mais aucun message ne s'est envoyé.
