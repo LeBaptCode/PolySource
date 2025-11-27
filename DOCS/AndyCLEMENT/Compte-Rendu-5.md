@@ -1,33 +1,41 @@
-# Compte Rendu Semaine 5 / W48
+# Compte Rendu Semaine 5 / W48 (27/11)
 
-## Communication 
+## Communication avec le module via envoi de SMS
 
-Pour ne pas dépendre de l'ordinateur de mon collègue Matthis pour la configuration du GSM, j'ai de nouveau recherche les bons drivers de communication USB-Serie avec le GSM WH-LTE-7S1-E et j'ai mis la main sur un [tuto] (https://github.com/theAmberLion/Prolific?tab=readme-ov-file) qui m'explique comment avoir la bonne version du drivers pour communiquer avec la carte sous Windows 11.
-Desormais, on configure la liaison SMS avec le logiciel fournis [USR-CAT1] (https://www.pusr.com/support/downloads/USR-CAT-1-Setup-Software.html). En suivant le [Hardware-Manual] (../../Ressource/User Manual/User-Manuel-WH-LTE-7S1-E.pdf) pour configurer le SMS mode en ajoutant notre numéro de téléphone. On réussi à communiquer via le terminal mais une erreur survient, il ne détecte pas la SIM fournis. On a bien le bon adaptateur, Le problème est que la Carte SIM avait un mot de passe. On a donc supprimer le code PIN à l'aide d'un téléphone portable. 
-Après avoir résolu ce problème, le module GSM à réussi à detecter la SIM mais une nouvelle erreur est intervenue " Net Reg Fail ". Cela signifi que le module detecte les antennes autour de lui mais n'a pas l'autorisation de s'y connecter. Cela peut être la cause de plusieurs chose. 
-    - le signal est trop faible
-    - Problème de configuration APN, c'est à dire le fournisseur d'accés
+Pour ne pas dépendre de l'ordinateur de mon collègue Matthis pour la configuration du GSM, j'ai de nouveau recherché les bons drivers de communication USB-Serie avec le GSM WH-LTE-7S1-E et j'ai mis la main sur un [tuto](https://github.com/theAmberLion/Prolific?tab=readme-ov-file) qui m'explique comment avoir la bonne version des drivers pour communiquer avec la carte sous Windows 11. En effet, communiquer avec le port série du GSM est impossible sans le driver PL2303_Prolific.
 
-Pour communiquer avec le GSM on utilis des commandes AT, le constructeur fournis une liste de [commande] (../../Ressource/Other/4G-CAT1-AT-Command-Manual.pdf) sur le site du constructeur.
+## Communication avec le module en mode SMS
 
-La solution du problème était tout autre. Le GSM n'a pas d'antenne intégré donc a fallu en ajouter une. Grâce à cela on a pu envoyer un SMS au module 
-![SIM-Card Adaptator](./Images/Work-WH-LTE-7S1-E.JPG)
+Dans un premier temps, nous avons voulu configurer le module en mode SMS pour vérifier si le GSM pouvait se connecter au réseau téléphonique avant de configurer le mode MQTT. La configuration du GSM se fait via le logiciel propriétaire [USR-CAT1](https://www.pusr.com/support/downloads/USR-CAT-1-Setup-Software.html).
+En suivant le [Hardware-Manual](../../Ressource/User-Manual/User-Manuel-WH-LTE-7S1-E.pdf) pour configurer le mode de communication par SMS; il faut rensigner son numéro de téléphone pour envoyer des données. On a réussi à établir une communication via le port série mais une erreur survient, il ne détecte pas la SIM fournie.
+La cause de ce problème peut être aussi bien physique que logiciel, cependant notre SIM était bien insérée grâce à notre adaptateur. Le problème venait du fait que la carte SIM avait un code PIN de verrouillage qu'il fallait supprimer. Pour cela, nous avons utilisé un smartphone et inséré la SIM pour enlever le verrouillage.
+On pouvait désormais communiquer avec le réseau téléphonique.
 
-## Résolution du problème
- 
- Après plusieurs essais et plusieurs drivers installés, le problème était que les drivers étaient incompatibles avec ma version windows actuelle (Windows 11). Il a fallu installer les drivers sur le PC de Matthis qui tourne sous Windows 10. Grâce à ça, on a pu voir les options disponibles pour la transmission. De plus, Matthis a réussi à communiquer en série avec le GSM et l'ESP-32.
-Pour la transmission des données, on a plusieurs modes : HTTP, MQTT, SMS, Transparent. Puisque nous voulons envoyer nos données à un appareil tier, la solution MQTT nous semble la plus cohérente et la plus formatrice. D'après le manuel Utilisateur du constructeur du GSM, on peut utiliser AWS pour la connexion entre les Appareils. Il faudra se pencher dessus.
+## Problème de connexion au réseau téléphonique
 
-## Envoi des données du sonar vers le GSM 
+Après avoir résolu ce problème, le module GSM a réussi à détecter la SIM mais une nouvelle erreur est intervenue, l'erreur était "Net Reg Fail", une abréviation pour "Nerwork Registration Fail". Cela signifie que le module détecte les antennes autour de lui mais n'arrive pas s'y connecter de manière fiable.
+![SMS-Suceed](./Images/Net-Reg-Error.png)
+Cela peut être la cause de plusieurs choses.
 
-Maintenant, on essaie d'envoyer les données du sonar sur le GSM. Pour cela, Matthis a eu des soucis au niveau de l'alimentation.
+- La carte, le signal à attraper est trop faible.
+- Problème de configuration APN, c'est-à-dire de fournisseur d'accès
 
-## Création d'un adaptateur SIM
+Tout d'abord, nous avons voulu diagnostiquer le GSM via des commandes AT, le constructeur fournit une liste de [commande](../../Ressource/Other/4G-CAT1-AT-Command-Manual.pdf) sur le site du constructeur. Nous avons essayé les commandes AT+CSQ ou encore AT+CEREG? Pour vérifier la puissance du signal mais sans succès.
 
-Notre GSM utilise un format de SIM standard (utilisé dans les années 2000), or la carte SIM que l'on nous a fournie est une NANO-SIM. C'est pourquoi nous allons chercher un fichier 3D qui modélise un tel adaptateur. J'ai trouvé [celui-ci] ( https://makerworld.com/fr/models/662271-3d-printable-sim-card-adapter-nano-micro-mini#profileId-589458).
-Je l'ai imprimé au FabLab du campus 
-![SIM-Card Adaptator](./Images/SIM-Card.JPG)
-![SIM-Card Adaptator work](./Images/SIM-Card-work.JPG)
+Enfait la solution du problème était tout autre. Le GSM n'a pas d'antenne intégré ( chose que l'on ignorait) donc a fallu en ajouter une. Grâce à cela, le GSM a pu se connecter correctement et recevoir nos SMS de test.
 
-## Prochaine séance
- Réussir à transmettre les données grâce à la connexion réseau (SIM) et configurer la connexion MQTT
+- ![SMS-Suceed](./Images/SMS-suceed.png)
+- ![SMS](./Images/SMS.png)
+- ![GSM-Antenna](./Images/GSM-Antenna.JPG)
+
+## Essaie d'envoie de SMS via le GSM vers un smartphone
+
+Bien qu'il recevait nos SMS, le module ne parvenait pas à envoyer de SMS vers notre mobile. En effet, lorsque l'on veut envoyer des données, le module émetteur a besoin de beaucoup de puissance (cf. cours de Radio Communication). Cependant, le GSM est alimenté via le port USB de mon ordinateur portable. Cette alimentation est limitée et ne permet pas d'émettre dans de bonnes conditions. C'est pour cela que nous avons besoin d'une nouvelle alimentation.
+
+## Ajout de l'User Manual du WH-LTE-7S1
+
+Pour faciliter la mise en commun des ressources, j'ai ajouté dans le GitHub l'user manual ainsi que d'autres documents utiles au projet.
+
+## Prochaine séance du 28/11
+
+Bien que le fait que les GSM arrivent à recevoir des SMS, il faut qu'ils parviennent à envoyer, c'est pour cela que nous allons tout d'abord construire une alimentation puis essayer de transmettre les données grâce à la méthode MQTT.
