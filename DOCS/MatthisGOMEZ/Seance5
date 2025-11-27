@@ -1,1 +1,17 @@
 Nous nous sommes mis d'accord pour utiliser le protocole MQTT
+
+Andy a réussi à installer le bon driver pour pouvoir configurer la liaison réseau de son côté.
+
+On se concentre sur le GSM WH-LTE-7S1-E DIP Type LTE Cat 1 Module 4G UART TT.
+Sur le logiciel USR-CAT1 on arrive à détecter la carte sur le terminal mais aucune com possible en mqtt.
+Problème, message d'erreur : "No Sim.Reboot"
+
+Le problème était le suivant : le code PIN de la carte Sim pourrait verrouiller la liaison.
+Effectivement après avoir déverrouillé le téléphone on voit apparaitre le message 'Test' que nous avions envoyé plus tôt.
+On retire donc ce code pin pour pouvoir permettre une liaison facilité.
+
+Nouveau problème identifié : 'net reg fail' lié peut-être à la carte Sim mal configurée ou à un forfait mobile non fonctionnel.
+
+Nous avons également vérifié si les bandes de fréquence de l'USR correspondent aux bandes françaises de free, c'est le cas.
+
+
