@@ -1,0 +1,19 @@
+Probleme d'envoi de SMS depuis le gsm vers le téléphone d'Andy
+Nous pensions qu'il s'agissait d'un problème d'alim car l'envoi d'un sms nécessite plus de courant que la réception d'un sms.
+Mais non, nous avons une error:58 qui correspondrait à un mauvais format de message.
+
+Vérifications : 
+carte sim reconnue sur le réseau d'après le terminal
+On est bien enregistré sur le réseau d'après le terminal 
+le problème n'est plus la connexion physique, mais un blocage de l'interface SMS.
+
+Peu importe le mode que l'on utilise (data, sms...) on a toujours cette erreur 58
+alors que la SIM est en READY et le module est enregistré sur le réseau.
+
+On pense que le service SMS est désactivé/bloqué par le firmware.
+
+Aucune solution pour le moment, on décide d'avancer et d'essayer le mode MQTT pour ne pas perdre trop de temps,
+On pense forcément que si l'on ne peut pas envoyer de sms on aura aussi des problèmes avec le MQTT,
+mais au moins on règlera le problème d'un mode qui nous sert réellement dans notre projet, pas juste
+un mode de test.
+
