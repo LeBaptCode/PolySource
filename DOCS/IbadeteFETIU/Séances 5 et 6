@@ -1,0 +1,288 @@
+Rapport de projet – Monitoring Sonar & Batterie sur Grafana (Environnement macOS)
+
+
+Informations générales
+Plateforme de visualisation : Grafana
+
+Base de données temporelle : InfluxDB
+
+Gestions des conteneurs : Docker Desktop
+
+Système d’installation des paquets : Terminal ZSH sur Mac
+
+Langage utilisé pour simuler les données : Python avec InfluxDB Client Library
+
+
+1. Objectif des séances
+
+
+L’objectif de ces séances a été de créer un système de monitoring capable d’afficher plusieurs blocs d’informations:
+
+
+
+Bloc                                   |                  Description
+
+Graph sonar                            |                  évolution de la hauteur d’eau mesurée par un sonar
+
+Hauteur actuelle                       |                  valeur instantanée + variation (He − Hmax)
+
+Débit                                  |                  évolution du débit via un débitmètre
+
+Batterie                               |                  capacité (%) + tension (V)
+
+Alerte                                 |                  déclenchée si dépassement (d > dmax)
+
+
+
+
+En attendant de tester avec de vraies données, un système de fausses données injectées dans InfluxDB a été mis en place.
+
+2. ⚙️ Mise en place de l’environnement sur macOS
+
+
+2.1 Installation de Docker & Grafana
+
+
+L’installation de Docker s’effectue via l’application Docker Desktop, puis Grafana via un package manager.
+
+L’erreur initiale a été l’absence de Homebrew, résolue par l’installation officielle de Homebrew depuis le terminal :
+
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+Ensuite :
+
+
+brew install grafana
+brew services start grafana
+
+2.2 Installation & configuration InfluxDB
+
+
+InfluxDB a été installé via Docker :
+
+docker run -d \
+-p 8086:8086 \
+--name influxdb \
+influxdb:2.7
+
+
+
+Accès navigateur :
+
+http://localhost:8086
+
+Création des ressources :
+
+Organisation : my-org
+
+Bucket : my-bucket
+
+API Token généré par InfluxDB lors de l’installation
+
+
+3. Création d’un fichier docker-compose.yml
+
+
+Un stack local InfluxDB + Grafana a ensuite été défini dans un fichier docker-compose.yml :
+
+version: "3"
+services:
+influxdb:
+image: influxdb:2.7
+container_name: influxdb
+ports:
+- "8086:8086"
+volumes:
+- influxdb-data:/var/lib/influxdb2
+grafana:
+image: grafana/grafana:latest
+container_name: grafana
+ports:
+- "3000:3000"
+depends_on:
+- influxdb
+volumes:
+- grafana-data:/var/lib/grafana
+volumes:
+influxdb-data:
+grafana-data:
+influxdb-data: {}
+grafana-data: {}
+
+Lancement :
+
+docker compose up -d
+
+4. Simulation d’une fausse base de données
+
+
+4.1 Script Python fake_data.py
+from influxdb_client import InfluxDBClient, Point, WriteOptions
+import time
+import random
+
+url = "http://localhost:8086"
+token = "TON_TOKEN_ICI"
+org = "my-org"
+bucket = "my-bucket"
+
+client = InfluxDBClient(url=url, token=token, org=org)
+write_api = client.write_api(write_options=WriteOptions(batch_size=1))
+
+for i in range(20):
+h = random.uniform(0.2, 2.5)
+p = Point("station").field("height", h).tag("site", "Station1")
+write_api.write(bucket=bucket, org=org, record=p)
+print("Sent:", h, "m")
+time.sleep(2)
+
+client.close()
+
+Ce script injectait une valeur de hauteur dans InfluxDB à intervalle régulier jusqu’à ce que la connexion soit refusée à cause d’un mauvais endpoint.
+
+Une fois InfluxDB relancé via Docker compose, les données sont arrivées correctement dans Grafana 
+
+5. Installation d’un plugin interactif
+
+
+Installation d’un plugin communautaire pour utiliser Liquid Fill, effet visuel type sonar :
+
+
+grafana-cli plugins install volkovlabs-echarts-panel
+brew services restart grafana
+
+Ce plugin permet l’utilisation d’options avancées de visualisation ECharts via JavaScript.
+
+6. Création du panel “Hauteur actuelle” via le plugin ECharts
+
+
+6.1 Code initial
+let values = [];
+
+context.panel.data.series.map((s) => {
+values = s.fields.find((f) => f.type === 'number').values;
+});
+
+let height = values.length ? values.get(values.length - 1) : 0;
+const dmax = 2.5;
+
+let fraction = height / dmax;
+if (fraction > 1) fraction = 1;
+if (fraction < 0) fraction = 0;
+
+return {
+backgroundColor: 'transparent',
+series: [{
+type: 'liquidFill',
+radius: '90%',
+data: [fraction]
+}]
+};
+
+Ce code :
+
+récupère la dernière valeur numérique renvoyée par la requête Flux de Grafana
+
+transforme la hauteur en fraction 0–1 pour le remplissage “liquid”
+
+
+6.2 Correction du sens physique
+
+
+Les données étant une distance sonar → surface de l’eau, le sens a été inversé :
+
+let fraction = 1 - (height / dmax);
+fraction = Math.max(0, Math.min(1, fraction));
+
+
+
+let fraction = 1 - (height / dmax);
+fraction = Math.max(0, Math.min(1, fraction));
+
+6.3 Version finale du panel hauteur + texte décimal centré
+let values = [];
+
+context.panel.data.series.forEach((s) => {
+const nums = s.fields.find((f) => f.type === 'number' || f.name === '_value')?.values;
+if (nums) {
+for (let i = 0; i < nums.length; i++) {
+values.push(nums.get(i));
+}
+}
+});
+
+let height = values.length > 0 ? values[values.length - 1] : 0;
+const dmax = 2.5;
+let fraction = 1 - (height / dmax);
+
+if (fraction > 1) fraction = 1;
+if (fraction < 0) fraction = 0;
+
+return {
+backgroundColor: 'transparent',
+series: [{
+type: 'liquidFill',
+radius: '90%',
+center: ['50%', '50%'],
+data: [fraction, Math.max(fraction - 0.05, 0), Math.max(fraction - 0.10, 0)]
+}],
+
+graphic: [{
+type: 'text',
+left: 'center',
+top: 'middle',
+z: 100,
+style: {
+text: height.toFixed(2) + ' m',
+fontSize: 32,
+fontWeight: 'bold',
+fill: '#ffffff',
+textAlign: 'center',
+textVerticalAlign: 'middle',
+fontFamily: 'Lugrasimo'
+}
+}]
+};
+
+7.  Résolution des principales erreurs rencontrées
+Erreur                                            Cause                                              Solution
+
+fraction is not defined                           variable jamais créée avant utilisation            création manuelle + clamp
+
+height is not defined                             mauvais nom utilisé dans le formatter              cohérence des variables
+
+brew: command not found                           Homebrew non installé                              installation officielle
+
+connection refused on 8086                        InfluxDB pas lancé ou mauvais port IPv6            relance Docker Desktop + Compose
+
+Pas de données dans les panels
+
+Mauvais time range ou mauvaise extraction
+
+
+
+
+8. Résultats obtenus
+Connexion InfluxDB ↔ Grafana fonctionnelle 
+
+Injection de fausses données avec Python 
+
+Affichage sonar interactif et stylé avec ECharts 
+
+Texte centré au centre du liquid fill 
+
+Compréhension du workflow plugin vs panels natifs 
+
+Correction du sens logique de la donnée sonar 
+
+9.  Perspectives
+
+Les prochaines étapes du projet consisteront à :
+
+connecter ce système à un vrai sonar physique
+
+améliorer le design des dashboards avec davantage d’indicateurs en lien avec l’eau et l’IoT
+
+ajouter des alertes natives Grafana
+
+déployer sur un Raspberry Pi
