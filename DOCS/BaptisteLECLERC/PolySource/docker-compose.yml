@@ -1,0 +1,38 @@
+services:
+  influxdb:
+    image: influxdb:2
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    restart: always
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: always
+
+  telegraf:
+    image: telegraf
+    container_name: telegraf
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+    restart: always
+  
+  hivemq: 
+    image: hivemq/hivemq4:latest
+    container_name: hivemq
+    ports: 
+     - "1883:1883"
+     - "8080:8080"
+
+volumes:
+  influxdb_data:
+  grafana_data:
