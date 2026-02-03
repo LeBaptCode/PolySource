@@ -17,7 +17,9 @@ library étant donné que le format json est assez simple à coder : {"dist":VAL
 
 j'upload le code arduino sur notre git.
 
-Prochaine étape, suivre nos pistes concernant la communication gsm.
+Prochaine étape, suivre nos pistes concernant la communication gsm, notamment en SMS
+Andy a identifié un problème concernant l'APN pour pouvoir se connecter à une antenne, on va voir prochaine séance, car 
+l'APN fait le pont entre l'appareil et les services du réseau mobile, c'est la prote d'entrée du réseau.
 
 
 
