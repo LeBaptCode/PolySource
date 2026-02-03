@@ -20,7 +20,7 @@ La recréation de ces panneaux a demandé plusieurs ajustements car certains él
 La fin de la séance a été consacrée à la finalisation du panneau de débordement. Ce panneau fonctionne comme un indicateur visuel permettant de savoir immédiatement si le système détecte un débordement. J’ai terminé le développement du bouton d’état associé, qui affiche désormais clairement si le système est en fonctionnement normal ou en situation d’overflow. Plusieurs corrections ont été nécessaires pour obtenir un bouton correctement centré dans le panneau et lisible quelle que soit la taille de la fenêtre. Cette étape a permis d’obtenir un indicateur visuel propre et fonctionnel.
 
 <p align="center">
-  <img src="images/debordement.png" width="650">
+  <img src="images/Screenshot 2026-02-03 at 16.10.35.png" width="650">
 </p>
 
 <p align="center">
