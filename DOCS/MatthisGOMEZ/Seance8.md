@@ -14,8 +14,8 @@ les informations que l'on récolte de notre côté et le serveur géré par Ibad
 
 Une fois ceci fait, il ne nous restera qu'à interpréter les résultats et ajuster nos valeurs d'alerte selon la cuve.
 
-
-
+Nous avons identifié une erreur 53 dans le terminal 
+.
 
 
 
