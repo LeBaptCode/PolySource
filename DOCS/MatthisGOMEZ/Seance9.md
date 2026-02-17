@@ -1,3 +1,5 @@
+## Contourner le problème
+
 Nous avons eu une idée pour contourner le problème de communication MQTT.
 En effet, si le stack MQTT du modem nous bloque depuis 2 séances, laisser l'ESP32 gérer la couche réseau c'est beaucoup plus souple.
 Pour que cela soit possible, on passe le modem en mode "Transparent" (ou mode Bridge/PPP). 
@@ -22,3 +24,5 @@ et ça passe beaucoup mieux.
 Coté code, on met l'APN "free" via l'ESP (TinyGSM s'en occupe), puis on crée un TinyGsmClient et on passe ce client à PubSubClient.
 
 On est en train de travailler le code, mais le socket A est connecté au broker ce qui est un bon début.
+
+## Prochaine Séance
