@@ -14,18 +14,11 @@ C'est l'ESP qui gère le protocole MQTT, pas le modem.
 Le câblage :
 On garde bien le TX/RX entre l'ESP et le modem, et on vérifie que les niveaux logiques sont bons. 
 
-Pourquoi est-ce que cela va nous ai der pour la fameuseerreur 53?
+Pourquoi est-ce que cela va nous aider pour la fameuseerreur 53?
 L'erreur 53 du modem, c'est souvent la pile TCP/IP interne qui plante ou qui refuse le port 1883. 
 En passant par l'ESP32 pour le MQTT, on contourne cette logique. L'ESP envoie des paquets TCP bruts à travers le modem,
 et ça passe beaucoup mieux.
 
-Côté code, ça donnerait un truc du genre :
+Coté code, on met l'APN "free" via l'ESP (TinyGSM s'en occupe), puis on crée un TinyGsmClient et on passe ce client à PubSubClient.
 
-Tu configures l'APN "free" via l'ESP (TinyGSM s'en occupe).
-
-Tu crées un TinyGsmClient.
-
-Tu passes ce client à PubSubClient (MQTT).
-
-Un point de vigilance :
-L'ESP32 doit avoir assez de "jus". Si vous alimentez tout via l'USB du PC, avec le GSM qui pompe pour la data + l'ESP qui bosse, ça risque de crash encore. Gardez bien votre alim externe.
+On est en train de travailler le code, mais le socket A est connecté au broker ce qui est un bon début.
