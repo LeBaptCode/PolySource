@@ -14,8 +14,15 @@ les informations que l'on récolte de notre côté et le serveur géré par Ibad
 
 Une fois ceci fait, il ne nous restera qu'à interpréter les résultats et ajuster nos valeurs d'alerte selon la cuve.
 
+Malgré le succès des SMS, la communication MQTT reste le dernier point bloquant pour assurer la liaison avec le serveur (partie gérée par Ibadete et Baptiste).
 Nous avons identifié une erreur 53 dans le terminal 
-.
+Cette erreur correspond généralement à un problème de "Connection refused" ou de socket non disponible (souvent liée à une mauvaise adresse IP du broker, un port fermé ou une authentification refusée).
 
+Format de données : Nous avons validé l'utilisation du format JSON pour les futures transmissions, afin d'assurer la compatibilité avec l'affichage web.
 
+Prochaines étapes :
+Débogage spécifique de l'erreur MQTT 53 (vérification de l'adresse du Broker et des identifiants).
 
+Test d'intégration complet : Envoi des données du sonar vers le serveur en temps réel.
+
+Calibration des seuils d'alerte en fonction des dimensions réelles de la cuve.
