@@ -1,11 +1,17 @@
-Si AT+SOCKALK? renvoie "Connected", c'est une super nouvelle : ça veut dire que ton modem a bien ouvert le tuyau TCP vers HiveMQ. Le problème ne vient plus du réseau, mais de ce qui se passe dans le tuyau.
+## Seance 10
 
-Si ça boucle à l'infini malgré le "Connected", c'est que la couche SSL de l'ESP32 n'arrive pas à faire la "poignée de main" (handshake) avec HiveMQ à travers le modem.
+## Echec de communication via l'ESP32
+Même si la commande AT+SOCKALK? nous renvoyait enfin un état "Connected" (prouvant que le modem ouvrait bien le tuyau TCP vers HiveMQ), nous sommes restés bloqués sur la phase SSL.
 
-Problkeme : l'esp32 n'arrive pas à communiquer en serie avec le gsm.
+L’ESP32 n'arrivait pas à finaliser la connexion sécurisée à travers le GSM. On a identifié un problème : une instabilité dans la communication série entre l'ESP32 et le module GSM lors de l'envoi de gros paquets de données.
+Après 4 séances bloqués concernant la communication MQTT, et pour éviter de paralyser le projet plus longtemps, nous avons pris la décision de mettre cette partie en stand-by.
 
-Nous décidons de laisser ce problème en stand by car nous sommes bloqué depuis 4 séances déjà.
+Modem USR-DR154
+L'idée est de repartir sur une base propre avec le second modem à notre disposition : le USR-DR154.
 
-On passe donc à la configuration du second modem USR-DR154
+Configuration : Pour le paramétrer, on utilise le logiciel DTUset v1.3.4. C’est pratiquement le même environnement que pour l'USR-CAT1, ce qui nous a permis d'être opérationnels très vite.
 
-On utilise DTUset v1.3.4 qui est pratiquement le Même logiciel que usr cat 1 
+Objectif : Vérifier si ce module gère mieux le mode transparent et si la communication série est plus stable pour laisser passer le flux SSL de l'ESP32.
+
+3. Conclusion et perspectives
+Le but de la prochaine séance est de répliquer la config APN Free et les paramètres du broker HiveMQ sur ce nouveau module. Si on arrive à choper le "Connected" et à faire passer le SSL ici, on saura que le premier module avait un défaut ou une limitation sur la pile TCP/IP.
