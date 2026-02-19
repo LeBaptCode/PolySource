@@ -5,16 +5,17 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - influxdb_data:/var/lib/influxdb2
+      - ./influxdb_data:/var/lib/influxdb2
     restart: always
 
   grafana:
-    image: grafana/grafana-oss
+    image: grafana/grafana:latest
     container_name: grafana
+    user: "472:472"
     ports:
       - "3000:3000"
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana_data:/var/lib/grafana
     restart: always
 
   telegraf:
@@ -25,14 +26,3 @@ services:
     depends_on:
       - influxdb
     restart: always
-  
-  hivemq: 
-    image: hivemq/hivemq4:latest
-    container_name: hivemq
-    ports: 
-     - "1883:1883"
-     - "8080:8080"
-
-volumes:
-  influxdb_data:
-  grafana_data:
