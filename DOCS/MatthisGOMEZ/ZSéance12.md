@@ -1,4 +1,23 @@
-Z
+
+
+
+
+Validation de la chaîne de transmission : Configurer le module sur le broker public broker.hivemq.com en port 1883.
+
+Premier Publish : Réussir l'envoi d'un message "Hello World" depuis le terminal AT vers le webclient HiveMQ.
+
+Réintégration ESP32 : Une fois la communication AT validée, réinjecter le code de pilotage dans l'ESP32 pour automatiser l'envoi.
+
+
+
+
+
+essaie avec un nouveau module usb vers port serie ft 232 rl
+
+
+
+
+
 polysource2025@gmail.com
 Polytech!2025
 
