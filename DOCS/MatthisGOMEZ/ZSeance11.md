@@ -1,95 +1,31 @@
+##Séance 11
 
-essaie aavec un nouveau module usb vers port serie ft 232 rl
+# Transition vers l'USR-DR154 et tests hardware
 
+Cette séance a été marquée par, une fois n'est pas coutume, un nouveau changement de stratégie matériel. Suite aux difficultés rencontrées avec le mode transparent et la gestion du SSL par l'ESP32, nous avons migré nos tests sur le USR-DR154.
 
->[Tx->][11:38:50][asc]
-AT+SYSINFO
+Pour garantir une base de test saine, nous avons remplacé le convertisseur USB-Série par un modèle FT232RL.
 
->[Rx<-][11:38:50][asc]
-AT+SYSINFO
+# Diagnostic et premières commandes AT
+Nous avons commencé par valider l'état du modem. Les commandes de base confirment que le hardware répond correctement et qu'il est bien accroché au réseau :
 
-+SYSINFO:2,LTE
+AT+SYSINFO : Le module est bien en mode LTE (4G).
 
-OK
+AT+CSQ : Réception de 14, ce qui est suffisant pour établir une session Data.
 
-Operation complete
->[Tx->][11:38:59][asc]
-CSQAT+CSQ
->[Warn][11:39:00][asc]
-CSQAT+CSQ
-+CME ERROR:58
+AT+APN : Configuration confirmée sur le réseau Free.
 
-Operation complete
->[Tx->][11:39:03][asc]
-AT+CSQ
+Nous avons également tenté de désactiver le mode écho avec la commande ATE0 afin d'éviter que le modem ne renvoie la commande tapée dans sa réponse, un phénomène qui polluait le parsing des données précedemment.
 
->[Rx<-][11:39:03][asc]
-AT+CSQ
+En tentant de configurer la socket de connexion vers HiveMQ Cloud (Port 8883), nous avons rencontré des erreurs critiques (+CME ERROR:58).
 
-+CSQ: 14,99
+Le diagnostic est clair : bien que le modem soit plus récent, l'utilisation du port sécurisé 8883 sur une instance Cloud partagée nécessite deux éléments que le firmware actuel semble REJETER ou ne pas reconnaître via les commandes AT standards :
 
-OK
+Le SNI (Server Name Indication) : Indispensable pour que le serveur HiveMQ sache quel certificat présenter.
 
-Operation complete
->[Tx->][11:39:11][asc]
-AT+APN
+Le support TLS natif : Les erreurs 58 sur les commandes de configuration SSL indiquent que le module refuse les paramètres de sécurité demandés pour le port 8883.
 
->[Rx<-][11:39:11][asc]
-AT+APN
+# Objectif prochaine séance : Simplification via le port 1883
+Face à l'impossibilité technique d'activer le SSL/SNI sur ce firmware (malgré une version V1.3.25 récente), nous avons pris la décision de simplifier la chaîne de communication pour valider l'envoi de données.
 
-+APN:free,,,0
-
-OK
-
-Operation complete
->[Tx->][11:39:19][asc]
-AT+SOCKAEN
-
->[Rx<-][11:39:19][asc]
-AT+SOCKAEN
-
-+SOCKAEN:ON
-
-OK
-
-Operation complete
->[Tx->][11:39:25][asc]
-AT+SOCKANN*
-
->[Warn][11:39:25][asc]
-AT+SOCKANN*
-
-+CME ERROR:58
-
-Operation complete
->[Tx->][11:39:27][asc]
-AT+SOCKALN
-
->[Warn][11:39:27][asc]
-AT+SOCKALN
-
-+CME ERROR:58
-
-Operation complete
->[Tx->][11:39:36][asc]
-AT+SOCKA
-
->[Rx<-][11:39:36][asc]
-AT+SOCKA
-
-+SOCKA:TCP,4ce3ae5fec044cfbb33a7989f49a7bd6.s1.eu.hivemq.cloud,8883
-
-OK
-
-Operation complete
->[Tx->][11:40:15][asc]
-AT+S
-
->[Rx<-][11:40:15][asc]
-AT+S
-
-OK
-
-Operation complete
->[Rx<-][11:40:20][asc]
-WH-LTE-7S1-E
+Nous abandonnons temporairement l'instance HiveMQ Cloud privée au profit d'un broker public de 'tuto' en port 1883. Cela nous permet de supprimer la couche de chiffrement qui bloquait nos sockets, tout en conservant la logique MQTT.
