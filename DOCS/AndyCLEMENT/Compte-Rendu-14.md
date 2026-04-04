@@ -9,6 +9,7 @@ En début de séance, le prof est venu constater l'avancé du projet. On lui a m
 
 Le module FT232RL est conçu pour faire la conversion de signal entre le port série RS232 / TTL vers USB. Le module se connecte aux ports UART du WH-LTE-7S1 puis via un cable USb, se connecte au PC. Bien que le module hardware fonctionne, le module GSM USR-DR154 utilise un port série RS485, ce qui signifie que le FT232RL ne peut pas être utilisé directement pour la connexion. Malheureusement, nous n'avons pas de module de conversion RS485 à TTL à notre disposition, ce qui empêche la connexion directe entre le FT232RL et le USR-DR154.
 Il faut attendre la commande du module de conversion pour pouvoir établir la connexion et tester la communication avec le USR-DR154. En attendant, nous avons mis en ligne les exécutables sur GitHub pour que le professeur puisse les tester et les utiliser pour la suite du projet.
+![FT232RL](./Images/FT232RL.JPG)
 
 ## Mise en ligne des executables sur github
 
