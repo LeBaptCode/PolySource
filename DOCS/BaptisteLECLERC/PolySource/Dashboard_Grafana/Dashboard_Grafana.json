@@ -1,0 +1,273 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": false,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "cfhspbm5fnoqof"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "baidu": {
+          "callback": "bmapReady",
+          "key": ""
+        },
+        "editor": {
+          "format": "auto"
+        },
+        "editorMode": "visual",
+        "gaode": {
+          "key": "",
+          "plugin": "AMap.Scale,AMap.ToolBar"
+        },
+        "getOption": "const series = context.panel.data.series.map((s) => {\n  const sData = s.fields.find((f) => f.type === 'number').values.buffer || s.fields.find((f) => f.type === 'number').values;\n  const sTime = s.fields.find((f) => f.type === 'time').values.buffer || s.fields.find((f) => f.type === 'time').values;\n  \n  return {\n    name: s.refId,\n    type: 'line',\n    showSymbol: false,\n    areaStyle: {\n      opacity: 0.1,\n    },\n    lineStyle: {\n      width: 1,\n    },\n    data: sData.map((d, i) => [sTime[i], d.toFixed(2)]),\n  };\n});\n\n/**\n * Enable Data Zoom by default\n */\nsetTimeout(() => context.panel.chart.dispatchAction({\n  type: 'takeGlobalCursor',\n  key: 'dataZoomSelect',\n  dataZoomSelectActive: true,\n}), 500);\n\n/**\n * Update Time Range on Zoom\n */\ncontext.panel.chart.on('datazoom', function (params) {\n  const startValue = params.batch[0]?.startValue;\n  const endValue = params.batch[0]?.endValue;\n  locationService.partial({ from: startValue, to: endValue });\n});\n\nreturn {\n  backgroundColor: 'transparent',\n  tooltip: {\n    trigger: 'axis',\n  },\n  legend: {\n    left: '0',\n    bottom: '0',\n    data: context.panel.data.series.map((s) => s.refId),\n    textStyle: {\n      color: 'rgba(128, 128, 128, .9)',\n    },\n  },\n  toolbox: {\n    feature: {\n      dataZoom: {\n        yAxisIndex: 'none',\n        icon: {\n          zoom: 'path://',\n          back: 'path://',\n        },\n      },\n      saveAsImage: {},\n    }\n  },\n  xAxis: {\n    type: 'time',\n  },\n  yAxis: {\n    type: 'value',\n    min: 'dataMin',\n  },\n  grid: {\n    left: '2%',\n    right: '2%',\n    top: '2%',\n    bottom: 24,\n    containLabel: true,\n  },\n  series,\n};",
+        "google": {
+          "callback": "gmapReady",
+          "key": ""
+        },
+        "map": "none",
+        "renderer": "canvas",
+        "themeEditor": {
+          "config": "{}",
+          "name": "default"
+        },
+        "visualEditor": {
+          "code": "const series = (context?.data?.series) || (context?.panel?.data?.series) || [];\n\nfunction lastValue(fieldName) {\n  for (const s of series) {\n    const f = (s.fields || []).find(x => x.name === fieldName);\n    if (f?.values?.length > 0) {\n      const i = f.values.length - 1;\n      const v = f.values.get ? f.values.get(i) : f.values[i];\n      return (v === null || v === undefined) ? null : Number(v);\n    }\n  }\n  return null;\n}\n\nconst percentRaw = lastValue(\"battery_percent\");\nconst p = (percentRaw === null || Number.isNaN(percentRaw))\n  ? 0 : Math.max(0, Math.min(100, percentRaw));\n\n// Couleurs Liquid Glass\nlet colorA, colorB;\nif (p >= 60) {\n  colorA = \"#48C774\"; colorB = \"#2a9a55\";\n} else if (p >= 20) {\n  colorA = \"#FFB832\"; colorB = \"#c97f10\";\n} else {\n  colorA = \"#FF5252\"; colorB = \"#c42020\";\n}\n\n// --- Géométrie (coordonnées relatives au centre du groupe) ---\nconst bW = 300, bH = 100, bR = 24;\nconst capW = 14, capH = 40;\nconst totalW = bW + 5 + capW;\n\nconst bX = -Math.round(totalW / 2);\nconst bY = -Math.round(bH / 2);\n\nconst capX = bX + bW + 5;\nconst capY = bY + (bH - capH) / 2;\n\nconst pad = 7;\nconst fX = bX + pad, fY = bY + pad;\nconst fWmax = bW - pad * 2, fH = bH - pad * 2;\nconst fR = bR - pad + 2;\nconst fillW = fWmax * (p / 100);\nconst fRr = p >= 99 ? fR : 5;\n\nconst tX = bX + bW / 2;\nconst tY = bY + bH / 2;\n\nreturn {\n  backgroundColor: \"transparent\",\n  animation: true,\n  animationDuration: 900,\n  animationEasing: \"cubicOut\",\n\n  graphic: [\n    {\n      type: \"group\",\n      left: \"center\",\n      top: \"middle\",\n      children: [\n\n        // 1. Fond verre sombre\n        {\n          type: \"rect\",\n          shape: { x: bX + 1, y: bY + 1, width: bW - 2, height: bH - 2, r: bR - 1 },\n          style: {\n            fill: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: \"rgba(255,255,255,0.10)\" },\n                { offset: 0.5, color: \"rgba(255,255,255,0.04)\" },\n                { offset: 1, color: \"rgba(255,255,255,0.08)\" }\n              ]\n            },\n            stroke: \"none\"\n          },\n          z: 1\n        },\n\n        // 2. Remplissage couleur (base)\n        p > 0 && {\n          type: \"rect\",\n          shape: { x: fX, y: fY, width: fillW, height: fH, r: [fR, fRr, fRr, fR] },\n          style: {\n            fill: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: colorA + \"d9\" },\n                { offset: 0.5, color: colorA + \"b3\" },\n                { offset: 1, color: colorB + \"cc\" }\n              ]\n            },\n            stroke: \"none\"\n          },\n          z: 2\n        },\n\n        // 3. Specular highlight\n        p > 0 && {\n          type: \"rect\",\n          shape: { x: fX, y: fY, width: fillW, height: fH * 0.46, r: [fR, fRr, 0, 0] },\n          style: {\n            fill: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: \"rgba(255,255,255,0.50)\" },\n                { offset: 0.35, color: \"rgba(255,255,255,0.20)\" },\n                { offset: 1, color: \"rgba(255,255,255,0.00)\" }\n              ]\n            },\n            stroke: \"none\"\n          },\n          z: 3\n        },\n\n        // 4. Reflection bas du fill\n        p > 0 && {\n          type: \"rect\",\n          shape: { x: fX, y: fY + fH * 0.72, width: fillW, height: fH * 0.28, r: [0, 0, fRr, fR] },\n          style: {\n            fill: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: \"rgba(255,255,255,0.00)\" },\n                { offset: 1, color: \"rgba(255,255,255,0.12)\" }\n              ]\n            },\n            stroke: \"none\"\n          },\n          z: 4\n        },\n\n        // 5. Bordure extérieure sombre (depth ring)\n        {\n          type: \"rect\",\n          shape: { x: bX, y: bY, width: bW, height: bH, r: bR },\n          style: {\n            fill: \"none\",\n            stroke: \"rgba(0,0,0,0.45)\",\n            lineWidth: 3\n          },\n          z: 5\n        },\n\n        // 6. Bordure verre principale\n        {\n          type: \"rect\",\n          shape: { x: bX + 1.5, y: bY + 1.5, width: bW - 3, height: bH - 3, r: bR - 1 },\n          style: {\n            fill: \"none\",\n            stroke: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: \"rgba(255,255,255,0.55)\" },\n                { offset: 0.5, color: \"rgba(255,255,255,0.18)\" },\n                { offset: 1, color: \"rgba(255,255,255,0.38)\" }\n              ]\n            },\n            lineWidth: 1.5\n          },\n          z: 6\n        },\n\n        // 7. Rim light\n        {\n          type: \"line\",\n          shape: { x1: bX + bR, y1: bY + 2.5, x2: bX + bW - bR, y2: bY + 2.5 },\n          style: {\n            stroke: \"rgba(255,255,255,0.28)\",\n            lineWidth: 1\n          },\n          z: 7\n        },\n\n        // 8. Cap (pill translucide)\n        {\n          type: \"rect\",\n          shape: { x: capX, y: capY, width: capW, height: capH, r: 7 },\n          style: {\n            fill: {\n              type: \"linear\", x: 0, y: 0, x2: 0, y2: 1,\n              colorStops: [\n                { offset: 0, color: \"rgba(255,255,255,0.55)\" },\n                { offset: 0.4, color: \"rgba(255,255,255,0.28)\" },\n                { offset: 1, color: \"rgba(255,255,255,0.40)\" }\n              ]\n            },\n            stroke: \"rgba(255,255,255,0.20)\",\n            lineWidth: 1\n          },\n          z: 8\n        },\n\n        // 9. Texte centré\n        {\n          type: \"text\",\n          x: tX,\n          y: tY,\n          style: {\n            text: `${Math.round(p)}%`,\n            fontSize: 46,\n            fontWeight: \"700\",\n            fontFamily: \"-apple-system, 'SF Pro Display', system-ui, sans-serif\",\n            fill: \"rgba(255,255,255,0.95)\",\n            textAlign: \"center\",\n            textVerticalAlign: \"middle\",\n            shadowBlur: 14,\n            shadowColor: \"rgba(0,0,0,0.65)\",\n            shadowOffsetY: 2\n          },\n          z: 10\n        }\n\n      ].filter(Boolean)\n    }\n  ]\n};",
+          "dataset": [],
+          "series": []
+        }
+      },
+      "pluginVersion": "7.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "cfhspbm5fnoqof"
+          },
+          "query": "from(bucket: \"polysource_data\")\n  |> range(start: 0)  // ou une période large pour inclure toutes les données\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mqtt_consumer\")\n  |> filter(fn: (r) => r[\"_field\"] == \"battery_percent\")\n  |> filter(fn: (r) => r[\"device_id\"] == \"source01\")\n  |> filter(fn: (r) => r[\"host\"] == \"telegraf-container\")\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Batterie",
+      "transparent": true,
+      "type": "volkovlabs-echarts-panel"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "cfhspbm5fnoqof"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 18,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "baidu": {
+          "callback": "bmapReady",
+          "key": ""
+        },
+        "editor": {
+          "format": "auto"
+        },
+        "editorMode": "visual",
+        "gaode": {
+          "key": "",
+          "plugin": "AMap.Scale,AMap.ToolBar"
+        },
+        "getOption": "const series = context.panel.data.series.map((s) => {\n  const sData = s.fields.find((f) => f.type === 'number').values.buffer || s.fields.find((f) => f.type === 'number').values;\n  const sTime = s.fields.find((f) => f.type === 'time').values.buffer || s.fields.find((f) => f.type === 'time').values;\n  \n  return {\n    name: s.refId,\n    type: 'line',\n    showSymbol: false,\n    areaStyle: {\n      opacity: 0.1,\n    },\n    lineStyle: {\n      width: 1,\n    },\n    data: sData.map((d, i) => [sTime[i], d.toFixed(2)]),\n  };\n});\n\n/**\n * Enable Data Zoom by default\n */\nsetTimeout(() => context.panel.chart.dispatchAction({\n  type: 'takeGlobalCursor',\n  key: 'dataZoomSelect',\n  dataZoomSelectActive: true,\n}), 500);\n\n/**\n * Update Time Range on Zoom\n */\ncontext.panel.chart.on('datazoom', function (params) {\n  const startValue = params.batch[0]?.startValue;\n  const endValue = params.batch[0]?.endValue;\n  locationService.partial({ from: startValue, to: endValue });\n});\n\nreturn {\n  backgroundColor: 'transparent',\n  tooltip: {\n    trigger: 'axis',\n  },\n  legend: {\n    left: '0',\n    bottom: '0',\n    data: context.panel.data.series.map((s) => s.refId),\n    textStyle: {\n      color: 'rgba(128, 128, 128, .9)',\n    },\n  },\n  toolbox: {\n    feature: {\n      dataZoom: {\n        yAxisIndex: 'none',\n        icon: {\n          zoom: 'path://',\n          back: 'path://',\n        },\n      },\n      saveAsImage: {},\n    }\n  },\n  xAxis: {\n    type: 'time',\n  },\n  yAxis: {\n    type: 'value',\n    min: 'dataMin',\n  },\n  grid: {\n    left: '2%',\n    right: '2%',\n    top: '2%',\n    bottom: 24,\n    containLabel: true,\n  },\n  series,\n};",
+        "google": {
+          "callback": "gmapReady",
+          "key": ""
+        },
+        "map": "none",
+        "renderer": "canvas",
+        "themeEditor": {
+          "config": "{}",
+          "name": "default"
+        },
+        "visualEditor": {
+          "code": "// --------------------------------------------\n// 1. Récupération des points depuis Grafana\n// --------------------------------------------\nlet points = [];\nlet vmax = 0;\n\nif (context.panel && context.panel.data && context.panel.data.series.length > 0) {\n  const series = context.panel.data.series[0];\n  const timeField = series.fields.find(f => f.type === 'time');\n  const valueField = series.fields.find(f => f.type === 'number' || f.name === '_value');\n  if (timeField && valueField) {\n    const tVals = timeField.values;\n    const vVals = valueField.values;\n    for (let i = 0; i < vVals.length; i++) {\n      const t = tVals.get ? tVals.get(i) : tVals[i];  // ← robuste\n      const val = vVals.get ? vVals.get(i) : vVals[i];  // ← robuste\n      if (val === null || val === undefined) continue;\n      points.push([t, Number(val)]);\n      if (Number(val) > vmax) vmax = Number(val);\n    }\n  }\n}\n\n// --------------------------------------------\n// 2. Intensité dynamique (highlight)\n// --------------------------------------------\nconst seuil = 50;\nlet intensity = Math.min(Math.max(vmax / seuil, 0), 1);\nlet topDark = `rgba(40, 0, 60, ${0.85 + intensity * 0.15})`;\nlet midColor = `rgba(103, 58, 183, ${0.40 + intensity * 0.20})`;\nlet bottomColor = `rgba(233, 220, 255, 0.12)`;\nlet shadow = `rgba(40, 0, 60, ${0.6 + intensity * 0.25})`;\nlet blur = 12 + intensity * 12;\nlet offsetY = 6 + intensity * 8;\n// --------------------------------------------\n// 3. Configuration ECharts\n// --------------------------------------------\nreturn {\n  backgroundColor: 'transparent',\n\n  tooltip: {\n    trigger: 'axis',\n    axisPointer: { type: 'line' },\n    valueFormatter: (v) =>\n      v.toFixed ? v.toFixed(2) + \" L/s\" : v + \" L/s\"\n  },\n  grid: {\n    left: '6%',\n    right: '4%',\n    top: '8%',\n    bottom: '18%'\n  },\n  xAxis: {\n    type: 'time',\n    boundaryGap: false,\n    axisLine: { lineStyle: { color: '#9575cd' } },\n    axisLabel: { color: '#d1c4e9' },\n    splitLine: { show: false }\n  },\n  yAxis: {\n    type: 'value',\n    min: 0,  // ← pas de zone négative\n    name: 'Débit (L/s)',\n    nameTextStyle: { color: '#9575cd', fontWeight: 'bold' },\n    axisLine: { lineStyle: { color: '#9575cd' } },\n    axisLabel: { color: '#d1c4e9' },\n    splitLine: {\n      show: true,\n      lineStyle: { color: 'rgba(209,196,233,0.2)' }\n    }\n  },\n  series: [\n    {\n      name: 'Débit',\n      type: 'line',\n      smooth: true,\n      showSymbol: false,\n      data: points,\n\n      lineStyle: {\n        width: 3,\n        color: '#7e57c2'\n      },\n      areaStyle: {\n        color: {\n          type: 'linear',\n          x: 0, y: 0, x2: 0, y2: 1,\n          colorStops: [\n            { offset: 0, color: topDark },\n            { offset: 0.35, color: midColor },\n            { offset: 1, color: bottomColor }\n          ]\n        }\n      },\n      shadowColor: shadow,\n      shadowBlur: blur,\n      shadowOffsetY: offsetY,\n      z: 10,\n      emphasis: { focus: 'series' }\n    }\n  ]\n};",
+          "dataset": [],
+          "series": []
+        }
+      },
+      "pluginVersion": "7.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"polysource_data\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mqtt_consumer\")\n  |> filter(fn: (r) => r[\"_field\"] == \"flow_rate_l_min\")\n  |> filter(fn: (r) => r[\"device_id\"] == \"source01\")\n  |> filter(fn: (r) => r[\"host\"] == \"telegraf-container\")\n  |> group(columns: [\"_measurement\", \"device_id\", \"host\"])  // Assure de grouper par ces colonnes\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Débit",
+      "transparent": true,
+      "type": "volkovlabs-echarts-panel"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "cfhspbm5fnoqof"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 5
+      },
+      "id": 3,
+      "options": {
+        "baidu": {
+          "callback": "bmapReady",
+          "key": ""
+        },
+        "editor": {
+          "format": "auto"
+        },
+        "editorMode": "visual",
+        "gaode": {
+          "key": "",
+          "plugin": "AMap.Scale,AMap.ToolBar"
+        },
+        "getOption": "const series = context.panel.data.series.map((s) => {\n  const sData = s.fields.find((f) => f.type === 'number').values.buffer || s.fields.find((f) => f.type === 'number').values;\n  const sTime = s.fields.find((f) => f.type === 'time').values.buffer || s.fields.find((f) => f.type === 'time').values;\n  \n  return {\n    name: s.refId,\n    type: 'line',\n    showSymbol: false,\n    areaStyle: {\n      opacity: 0.1,\n    },\n    lineStyle: {\n      width: 1,\n    },\n    data: sData.map((d, i) => [sTime[i], d.toFixed(2)]),\n  };\n});\n\n/**\n * Enable Data Zoom by default\n */\nsetTimeout(() => context.panel.chart.dispatchAction({\n  type: 'takeGlobalCursor',\n  key: 'dataZoomSelect',\n  dataZoomSelectActive: true,\n}), 500);\n\n/**\n * Update Time Range on Zoom\n */\ncontext.panel.chart.on('datazoom', function (params) {\n  const startValue = params.batch[0]?.startValue;\n  const endValue = params.batch[0]?.endValue;\n  locationService.partial({ from: startValue, to: endValue });\n});\n\nreturn {\n  backgroundColor: 'transparent',\n  tooltip: {\n    trigger: 'axis',\n  },\n  legend: {\n    left: '0',\n    bottom: '0',\n    data: context.panel.data.series.map((s) => s.refId),\n    textStyle: {\n      color: 'rgba(128, 128, 128, .9)',\n    },\n  },\n  toolbox: {\n    feature: {\n      dataZoom: {\n        yAxisIndex: 'none',\n        icon: {\n          zoom: 'path://',\n          back: 'path://',\n        },\n      },\n      saveAsImage: {},\n    }\n  },\n  xAxis: {\n    type: 'time',\n  },\n  yAxis: {\n    type: 'value',\n    min: 'dataMin',\n  },\n  grid: {\n    left: '2%',\n    right: '2%',\n    top: '2%',\n    bottom: 24,\n    containLabel: true,\n  },\n  series,\n};",
+        "google": {
+          "callback": "gmapReady",
+          "key": ""
+        },
+        "map": "none",
+        "renderer": "canvas",
+        "themeEditor": {
+          "config": "{}",
+          "name": "default"
+        },
+        "visualEditor": {
+          "code": "// Récupérer les valeurs numériques depuis Grafana\n\nlet values = [];\n\nif (context.panel && context.panel.data && context.panel.data.series.length > 0) {\n\n  const s = context.panel.data.series[0];\n  const numField = s.fields.find(\n    f => f.type === 'number' || f.name === '_value'\n  );\n\n  if (numField) {\n    const vals = numField.values;\n    for (let i = 0; i < vals.length; i++) {\n      values.push(vals.get(i));\n    }\n  }\n}\n\n// Dernière valeur reçue\nlet height = values.length > 0 ? values[values.length - 1] : 0;\n\n// Hauteur max sonar\nconst dmax = 100;\n\n// Conversion en fraction eau (inversion sonar)\nlet fraction = 1 - (height / dmax);\nif (fraction > 1) fraction = 1;\nif (fraction < 0) fraction = 0;\n\n// Configuration Liquid Fill\nreturn {\n  backgroundColor: 'transparent',\n  series: [\n    {\n      type: 'liquidFill',\n      radius: '90%',\n      center: ['50%', '50%'],\n      data: [\n        fraction,\n        Math.max(fraction - 0.05, 0),\n        Math.max(fraction - 0.10, 0)\n      ],\n      color: [\n        '#0a3d5c',   // vague sombre\n        '#4fc3f7',   // vague claire\n        '#bfeaff'    // vague légère\n      ],\n      itemStyle: {\n        opacity: 0.8\n      },\n      backgroundStyle: {\n        color: '#ffffff'\n      },\n      outline: {\n        borderDistance: 4,\n        itemStyle: {\n          borderWidth: 2,\n          borderColor: '#0a3d5c'\n        }\n      },\n      waveAnimation: true,\n      animationDuration: 1500,\n      animationDurationUpdate: 800,\n      label: {\n        show: true,\n        formatter: () => height.toFixed(2) + ' cm',\n        fontSize: 40,\n        fontWeight: 'bold',\n        color: '#0a3d5c'\n      }\n    }\n  ]\n};",
+          "dataset": [],
+          "series": []
+        }
+      },
+      "pluginVersion": "7.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"polysource_data\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mqtt_consumer\")\n  |> filter(fn: (r) => r[\"_field\"] == \"water_level_cm\")\n  |> filter(fn: (r) => r[\"device_id\"] == \"source01\")\n  |> filter(fn: (r) => r[\"host\"] == \"telegraf-container\")\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Niveau d'eau",
+      "transparent": true,
+      "type": "volkovlabs-echarts-panel"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "cfhspbm5fnoqof"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 4,
+      "options": {
+        "baidu": {
+          "callback": "bmapReady",
+          "key": ""
+        },
+        "editor": {
+          "format": "auto"
+        },
+        "editorMode": "visual",
+        "gaode": {
+          "key": "",
+          "plugin": "AMap.Scale,AMap.ToolBar"
+        },
+        "getOption": "const series = context.panel.data.series.map((s) => {\n  const sData = s.fields.find((f) => f.type === 'number').values.buffer || s.fields.find((f) => f.type === 'number').values;\n  const sTime = s.fields.find((f) => f.type === 'time').values.buffer || s.fields.find((f) => f.type === 'time').values;\n  \n  return {\n    name: s.refId,\n    type: 'line',\n    showSymbol: false,\n    areaStyle: {\n      opacity: 0.1,\n    },\n    lineStyle: {\n      width: 1,\n    },\n    data: sData.map((d, i) => [sTime[i], d.toFixed(2)]),\n  };\n});\n\n/**\n * Enable Data Zoom by default\n */\nsetTimeout(() => context.panel.chart.dispatchAction({\n  type: 'takeGlobalCursor',\n  key: 'dataZoomSelect',\n  dataZoomSelectActive: true,\n}), 500);\n\n/**\n * Update Time Range on Zoom\n */\ncontext.panel.chart.on('datazoom', function (params) {\n  const startValue = params.batch[0]?.startValue;\n  const endValue = params.batch[0]?.endValue;\n  locationService.partial({ from: startValue, to: endValue });\n});\n\nreturn {\n  backgroundColor: 'transparent',\n  tooltip: {\n    trigger: 'axis',\n  },\n  legend: {\n    left: '0',\n    bottom: '0',\n    data: context.panel.data.series.map((s) => s.refId),\n    textStyle: {\n      color: 'rgba(128, 128, 128, .9)',\n    },\n  },\n  toolbox: {\n    feature: {\n      dataZoom: {\n        yAxisIndex: 'none',\n        icon: {\n          zoom: 'path://',\n          back: 'path://',\n        },\n      },\n      saveAsImage: {},\n    }\n  },\n  xAxis: {\n    type: 'time',\n  },\n  yAxis: {\n    type: 'value',\n    min: 'dataMin',\n  },\n  grid: {\n    left: '2%',\n    right: '2%',\n    top: '2%',\n    bottom: 24,\n    containLabel: true,\n  },\n  series,\n};",
+        "google": {
+          "callback": "gmapReady",
+          "key": ""
+        },
+        "map": "none",
+        "renderer": "canvas",
+        "themeEditor": {
+          "config": "{}",
+          "name": "default"
+        },
+        "visualEditor": {
+          "code": "// --------------------------------------------\n// 1. Récupérer les points (temps + hauteur) et vmax\n// --------------------------------------------\nlet points = [];\nlet vmax = 0;\n\nif (context.panel && context.panel.data && context.panel.data.series.length > 0) {\n  const series = context.panel.data.series[0];\n\n  const timeField = series.fields.find(f => f.type === 'time');\n  const valueField = series.fields.find(f => f.name === '_value' || f.type === 'number');\n\n  if (timeField && valueField) {\n    const tVals = timeField.values;\n    const vVals = valueField.values;\n    const len = tVals.length ?? tVals.buffer?.length ?? 0;\n\n    for (let i = 0; i < len; i++) {\n      // ← .get() ou accès direct selon la version Grafana\n      const t = tVals.get ? tVals.get(i) : tVals[i];\n      const raw = vVals.get ? vVals.get(i) : vVals[i];\n\n      if (raw === null || raw === undefined) continue;\n\n      // ← données en cm, on convertit en mètres\n      const val = Number(raw) / 100;\n      points.push([t, val]);\n\n      if (Math.abs(val) > vmax) vmax = Math.abs(val);\n    }\n  }\n}\n\n// --------------------------------------------\n// 2. Intensité (0→1, max = 1 m)\n// --------------------------------------------\nconst seuil = 1;\nlet intensity = Math.min(1, Math.max(0, vmax / seuil));\n\nconst lineColor = `rgba(24, 90, 157, ${0.4 + 0.6 * intensity})`;\nconst topFill = `rgba(24, 90, 157, ${0.6 + 0.3 * intensity})`;\nconst midFill = `rgba(77, 161, 214, ${0.4 + 0.2 * intensity})`;\nconst bottomFill = `rgba(227, 247, 255, 0.12)`;\n\n// --------------------------------------------\n// 3. Reflet miroir\n// --------------------------------------------\nconst mirrorPoints = points.map(p => [p[0], -p[1] * 0.6]);\n\n// --------------------------------------------\n// 4. Config ECharts\n// --------------------------------------------\nreturn {\n  backgroundColor: 'transparent',\n\n  tooltip: {\n    trigger: 'axis',\n    axisPointer: { type: 'line' },\n    valueFormatter: (val) =>\n      val && val.toFixed ? val.toFixed(2) + ' m' : val + ' m'\n  },\n\n  grid: {\n    left: '6%',\n    right: '4%',\n    top: '8%',\n    bottom: '18%'\n  },\n\n  xAxis: {\n    type: 'time',\n    boundaryGap: false,\n    axisLine: { lineStyle: { color: '#4fc3f7' } },\n    axisLabel: {\n      color: '#4f5b6e',\n      fontFamily: 'Poppins, sans-serif',\n      fontSize: 11\n    },\n    splitLine: {\n      show: true,\n      lineStyle: { color: 'rgba(200,210,230,0.15)' }\n    }\n  },\n\n  yAxis: {\n    type: 'value',\n    min: 0,\n    max: 1,\n    name: 'Hauteur (m)',\n    nameTextStyle: {\n      color: '#4f5b6e',\n      fontFamily: 'Poppins, sans-serif',\n      fontSize: 13,\n      fontWeight: '600'\n    },\n    axisLine: { lineStyle: { color: '#4fc3f7' } },\n    axisLabel: {\n      color: '#4f5b6e',\n      fontFamily: 'Poppins, sans-serif',\n      fontSize: 11,\n      formatter: v => v < 0 ? '' : v.toFixed(2) + ' m'\n    },\n    splitLine: {\n      show: true,\n      lineStyle: { color: 'rgba(200,210,230,0.22)' }\n    }\n  },\n\n  dataZoom: [\n    { type: 'inside', realtime: true },\n    {\n      type: 'slider',\n      height: 18,\n      bottom: 4,\n      textStyle: {\n        color: '#4f5b6e',\n        fontFamily: 'Poppins, sans-serif'\n      }\n    }\n  ],\n\n  series: [\n    {\n      name: \"Hauteur d'eau\",\n      type: 'line',\n      smooth: true,\n      showSymbol: false,\n      data: points,\n      lineStyle: { width: 3, color: lineColor },\n      areaStyle: {\n        color: {\n          type: 'linear', x: 0, y: 0, x2: 0, y2: 1,\n          colorStops: [\n            { offset: 0, color: topFill },\n            { offset: 0.4, color: midFill },\n            { offset: 1, color: bottomFill }\n          ]\n        }\n      },\n      shadowColor: `rgba(15, 54, 90, ${0.4 + 0.3 * intensity})`,\n      shadowBlur: 12 + intensity * 10,\n      shadowOffsetY: 6 + intensity * 6,\n      z: 10,\n      emphasis: { focus: 'series' }\n    },\n    {\n      name: 'Reflet',\n      type: 'line',\n      smooth: true,\n      showSymbol: false,\n      data: mirrorPoints,\n      lineStyle: { width: 0 },\n      areaStyle: {\n        color: {\n          type: 'linear', x: 0, y: 1, x2: 0, y2: 0,\n          colorStops: [\n            { offset: 0, color: 'rgba(227,247,255,0.00)' },\n            { offset: 0.6, color: 'rgba(77,161,214,0.10)' },\n            { offset: 1, color: 'rgba(24,90,157,0.25)' }\n          ]\n        }\n      },\n      shadowColor: 'rgba(24,90,157,0.25)',\n      shadowBlur: 8,\n      shadowOffsetY: -4,\n      z: 1\n    }\n  ]\n};",
+          "dataset": [],
+          "series": []
+        }
+      },
+      "pluginVersion": "7.2.4",
+      "targets": [
+        {
+          "query": "from(bucket: \"polysource_data\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"mqtt_consumer\")\n  |> filter(fn: (r) => r[\"_field\"] == \"water_level_cm\")\n  |> filter(fn: (r) => r[\"device_id\"] == \"source01\")\n  |> filter(fn: (r) => r[\"host\"] == \"telegraf-container\")\n  |> group(columns: [\"_measurement\", \"device_id\", \"host\"])  // Assure de grouper par ces colonnes\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Evolution Niveau d'Eau",
+      "transparent": true,
+      "type": "volkovlabs-echarts-panel"
+    }
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "PolySource",
+  "uid": "ad9w2h2",
+  "version": 17,
+  "weekStart": ""
+}
