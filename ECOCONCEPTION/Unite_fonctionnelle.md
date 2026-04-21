@@ -2,114 +2,175 @@
 
 ---
 
-## 1. Définition
+## 1. Besoin et contexte du projet
 
-L’unité fonctionnelle du système est définie comme suit :
+Le projet répond à un besoin de **surveillance à distance d’un bassin d’eau situé dans un environnement isolé**, typiquement en haute montagne.
 
-**"Assurer la mesure et la transmission à distance du niveau d’eau et du débit de débordement d’un bassin, avec une fréquence d’acquisition de 1 mesure par minute, et permettre la visualisation en temps réel des données, sur une durée de fonctionnement de 1 an."**
+### 🔹 Problématique
 
----
+| Élément | Description |
+|--------|------------|
+| Accès au site | Difficile (zone isolée, peu accessible) |
+| Réseau | Pas de WiFi / Ethernet |
+| Alimentation | Pas de réseau électrique |
+| Maintenance | Limitée |
 
-## 2. Justification
+### 🔹 Besoin utilisateur
 
-Cette unité fonctionnelle permet de représenter précisément le service rendu par le système, indépendamment de sa réalisation technique.
-
-Elle intègre :
-
-- la fonction de **mesure** (niveau et débit)  
-- la fonction de **traitement et transmission** des données  
-- la fonction de **visualisation à distance**  
-
-Le choix d’une durée de **1 an** permet de prendre en compte :
-
-- la consommation énergétique sur une période significative  
-- la durée de vie des composants  
-- les impacts liés à l’utilisation continue du système  
-
-La fréquence de **1 mesure par minute** correspond à un compromis réaliste entre précision du suivi et consommation énergétique.
+| Besoin | Description |
+|--------|------------|
+| Surveillance | Connaître l’état du bassin à distance |
+| Sécurité | Détecter un débordement |
+| Suivi | Observer l’évolution du niveau et du débit |
+| Autonomie | Fonctionnement sans intervention humaine |
 
 ---
 
-## 3. Fonctions couvertes
+## 2. Cadre de fonctionnement du système
 
-### Fonction principale
-- Mesurer le niveau d’eau et le débit de débordement d’un bassin
+### 🔹 Conditions d’utilisation
 
-### Fonctions associées
-- Traiter les données issues des capteurs  
-- Transmettre les données via un réseau mobile  
-- Stocker les données sous forme de séries temporelles  
-- Permettre leur visualisation à distance  
-
----
-
-## 4. Frontières du système
-
-### Inclus dans l’étude
-
-- Capteurs (niveau et débit)  
-- Microcontrôleur (ESP32)  
-- Module de communication GSM  
-- Système de traitement et visualisation (Raspberry Pi)  
-- Système d’alimentation (batterie et régulation)  
-
-### Exclus de l’étude
-
-- Infrastructure réseau globale (antennes, internet)  
-- Serveurs cloud distants (broker MQTT, hébergement externe)  
-- Phase d’utilisation de l’interface par l’utilisateur final  
+| Paramètre | Valeur |
+|----------|--------|
+| Environnement | Extérieur (montagne) |
+| Température | Variable |
+| Accès | Limité |
+| Durée de fonctionnement | Continu |
+| Alimentation | Batterie |
+| Communication | Réseau mobile 4G |
 
 ---
 
-## 5. Flux associés à l’unité fonctionnelle
+## 3. Définition de l’unité fonctionnelle
 
-Pour une durée de 1 an :
-
-- Nombre de mesures :  
-  ≈ 525 600 mesures (1 mesure/minute)
-
-- Transmission des données :  
-  ≈ 525 600 envois de messages MQTT
-
-Ces flux sont essentiels pour l’évaluation des impacts environnementaux liés :
-
-- à la consommation énergétique  
-- à la transmission des données  
+**Assurer la surveillance à distance d’un bassin d’eau isolé en mesurant le niveau d’eau et le débit de débordement, en transmettant ces données via le réseau mobile 4G (protocole MQTT) et en permettant leur visualisation sur une interface web, avec une acquisition toutes les 60 secondes, pour un fonctionnement continu pendant 1 an en environnement extérieur autonome.**
 
 ---
 
-## 6. Paramètres influents
+## 4. Décomposition technique du service
 
-Les principaux paramètres impactant l’ACV sont :
+### 🔹 Chaîne fonctionnelle
 
-- fréquence de mesure  
-- consommation énergétique des composants  
-- technologie de communication utilisée  
-- durée de vie des composants  
-- volume de données transmis  
-
----
-
-## 7. Limites
-
-- la précision des capteurs peut varier selon les conditions environnementales  
-- la consommation réelle dépend des conditions d’utilisation  
-- certaines infrastructures (réseau, cloud) ne sont pas prises en compte  
+| Étape | Technologie utilisée | Fonction |
+|------|--------------------|--------|
+| Mesure niveau | HC-SR04 | Distance → niveau d’eau |
+| Mesure débit | DIGITEN G3/4 | Impulsions → débit |
+| Traitement | ESP32 | Calcul + format JSON |
+| Transmission | USR-DR154 (4G) | Envoi MQTT |
+| Broker | HiveMQ Cloud | Réception des données |
+| Traitement data | Telegraf | Parsing |
+| Stockage | InfluxDB | Base temporelle |
+| Visualisation | Grafana | Dashboard |
+| Hébergement | Raspberry Pi | Exécution stack |
 
 ---
 
-## 8. Perspectives de comparaison
+## 5. Quantification du service rendu
 
-Cette unité fonctionnelle permet de comparer différentes architectures du système, par exemple :
+### 🔹 Hypothèses
 
-- avec ou sans Raspberry Pi  
-- communication GSM vs WiFi  
-- optimisation énergétique (mode veille, réduction fréquence)
+| Paramètre | Valeur |
+|----------|--------|
+| Fréquence de mesure | 1 mesure / minute |
+| Durée | 1 an |
+| Heures/an | 8760 h |
 
 ---
 
-## Conclusion
+### 🔹 Flux générés
 
-L’unité fonctionnelle définie permet de représenter de manière précise et quantifiable le service rendu par le système.
+| Type de flux | Quantité annuelle |
+|-------------|------------------|
+| Mesures capteurs | 525 600 |
+| Traitements ESP32 | 525 600 |
+| Messages MQTT | 525 600 |
+| Écritures InfluxDB | 525 600 |
+| Rafraîchissements Grafana | Variable |
 
-Elle constitue une base robuste pour l’analyse du cycle de vie et la comparaison de différentes solutions techniques dans une démarche d’écoconception.
+---
+
+## 6. Flot de référence
+
+| Élément | Description |
+|--------|------------|
+| Flot de référence | 1 système complet |
+| Composition | ESP32 + capteurs + GSM + Raspberry Pi + batterie |
+| Durée | 1 an |
+| Fonction | Réaliser 525 600 cycles de surveillance |
+
+---
+
+## 7. Frontières du système
+
+### 🔹 Inclus dans l’ACV
+
+| Élément |
+|--------|
+| Capteurs |
+| ESP32 |
+| Module GSM |
+| Raspberry Pi |
+| Batterie |
+| Logiciels (MQTT, Telegraf, InfluxDB, Grafana) |
+| Transmission de données |
+
+---
+
+### 🔹 Exclus
+
+| Élément |
+|--------|
+| Antennes 4G |
+| Infrastructure internet globale |
+| Serveurs cloud physiques |
+| Appareils utilisateur |
+| Installation terrain |
+
+---
+
+## 8. Paramètres influents (ACV)
+
+| Paramètre | Impact |
+|----------|-------|
+| Fréquence de mesure | Volume de données / énergie |
+| GSM 4G | Consommation énergétique élevée |
+| Raspberry Pi | Consommation continue |
+| Batterie | Durée de vie |
+| Température | Fiabilité et performance |
+
+---
+
+## 9. Domaine d’application
+
+### 🔹 Cas d’usage
+
+| Application | Description |
+|------------|------------|
+| Haute montagne | Surveillance bassin isolé |
+| Gestion eau | Monitoring ressources |
+| Industrie | Cuves / réservoirs |
+| Environnement | Suivi écologique |
+
+---
+
+### Limites
+
+| Limite | Impact |
+|-------|-------|
+| Dépendance réseau 4G | Risque de perte de données |
+| Autonomie batterie | Durée limitée |
+| Capteurs | Précision variable |
+| Conditions météo | Fiabilité |
+
+---
+
+## 10. Conclusion
+
+Cette unité fonctionnelle décrit un **service complet de monitoring à distance**, intégrant :
+
+- le besoin utilisateur  
+- les conditions réelles d’utilisation  
+- la chaîne technique complète  
+- une quantification précise  
+
+Elle constitue une base pertinente pour une **analyse du cycle de vie (ACV)** et permet de comparer différentes architectures du système.
