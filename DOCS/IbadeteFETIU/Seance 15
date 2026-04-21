@@ -1,0 +1,106 @@
+# Rapport de séance du 10/04/2026
+## Adaptation du dashboard aux nouvelles données et validation de la cohérence des mesures
+
+---
+
+## 1. Objectif de la séance
+
+L’objectif de cette séance était d’adapter la partie supervision aux évolutions récentes du système, notamment l’intégration de la communication MQTT et du format JSON pour les données.
+
+Il s’agissait également de vérifier la cohérence des données affichées dans Grafana et d’anticiper les ajustements nécessaires pour leur exploitation.
+
+---
+
+## 2. Analyse du nouveau format de données
+
+Suite à l’intégration du format JSON dans l’ESP32, une analyse de la structure des données a été réalisée afin de comprendre leur organisation et leur impact sur la visualisation.
+
+Les données contiennent désormais plusieurs champs :
+
+- mesures physiques (débit, niveau d’eau)  
+- informations temporelles (timestamp)  
+- état du système  
+
+Cette évolution implique une adaptation des requêtes utilisées dans Grafana pour garantir un affichage correct.
+
+---
+
+## 3. Adaptation des requêtes et de la visualisation
+
+Une réflexion a été menée sur la manière d’exploiter ces nouvelles données dans le dashboard.
+
+Plusieurs points ont été étudiés :
+
+- extraction des champs spécifiques depuis les données JSON  
+- gestion du timestamp pour assurer un affichage temporel cohérent  
+- compatibilité avec la base de données InfluxDB  
+
+Même si toutes les modifications n’ont pas été implémentées immédiatement, cette étape a permis d’anticiper les ajustements nécessaires pour intégrer correctement les données dans Grafana.
+
+---
+
+## 4. Vérification de la cohérence des données affichées
+
+Une attention particulière a été portée à la cohérence entre les données reçues et leur représentation graphique.
+
+Cette vérification a permis d’identifier plusieurs points de vigilance :
+
+- décalage possible entre les timestamps et l’affichage  
+- risque de valeurs incohérentes en cas de mauvaise conversion  
+- importance de la synchronisation temporelle dans le système  
+
+Ces éléments sont essentiels pour garantir la fiabilité du monitoring.
+
+---
+
+## 5. Réflexion sur la gestion du temps dans le système
+
+L’introduction d’un timestamp dans les données a soulevé une problématique importante : la gestion du temps dans un système embarqué.
+
+Plusieurs solutions ont été considérées :
+
+- utilisation d’un module RTC  
+- synchronisation via un serveur NTP  
+- récupération de l’heure via le module GSM  
+
+Cette réflexion met en évidence l’importance de la synchronisation temporelle pour assurer la cohérence des données dans une architecture distribuée.
+
+---
+
+## 6. Identification de limitations du système
+
+Lors de l’analyse des données, certaines limitations ont été mises en évidence :
+
+- fiabilité incertaine de certaines mesures (notamment capteurs)  
+- dépendance à la qualité des données en entrée  
+- impact direct des erreurs de mesure sur la visualisation  
+
+Ces observations confirment la nécessité de mettre en place des mécanismes de validation ou de filtrage des données.
+
+---
+
+## 7. Résultats obtenus
+
+À l’issue de cette séance :
+
+- la structure des nouvelles données a été analysée  
+- les adaptations nécessaires pour Grafana ont été identifiées  
+- les enjeux liés à la gestion du temps ont été compris  
+- les limitations du système ont été mises en évidence  
+
+---
+
+## 8. Conclusion et perspectives
+
+Cette séance a permis d’anticiper l’intégration des nouvelles données dans le système de supervision, en mettant en évidence les adaptations nécessaires et les points critiques à surveiller.
+
+Elle souligne l’importance d’une bonne structuration des données et d’une synchronisation temporelle fiable pour garantir la pertinence du monitoring.
+
+Pour la suite du projet, les axes suivants sont envisagés :
+
+- adaptation complète des requêtes Grafana au format JSON  
+- amélioration de la gestion du timestamp  
+- mise en place de filtres pour améliorer la qualité des données  
+- validation des mesures issues des capteurs  
+
+Ces évolutions permettront d’améliorer la fiabilité globale du système de supervision.
