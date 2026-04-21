@@ -1,4 +1,5 @@
 ## Description du Projet
+
 Le Projet consiste à concevoir un système qui permet de mesurer le débit de débordement ainsi que le niveau d'un bassin (notamment situé en haute montagne). Les données récoltées seraient consultables via une interface web pour que l'utilisateur puisse surveiller en temps réel le débit ainsi que le niveau à distance. Le capteur de niveau sera positionner en haut du bassin et tourné vers la surface de l'eau et le débit mettre sera positionné dans une sortie anti-debordement et mesurera le débit qui s'y écoule pour avoir une estimation du trop plein. Puisque le dispositif serait situé en montage, il utilisera le réseau mobile 4G pour communiquer et sera alimenté par une batterie, hors du réseau électrique français. Voici un schéma explicatif du projet :
 
 ![Schema-Explicatif](./Images/Schema.png)
@@ -6,6 +7,7 @@ Le Projet consiste à concevoir un système qui permet de mesurer le débit de d
 ## Materiels Utilisés
 
 Pour réaliser ce projet, nous avons utilisé le matériel suivant :
+
 - Un ESP32 [Heltec Wifi LoRa 32](https://fr.aliexpress.com/item/1005011982682740.html?src=google) Qui permettra de traiter les données récoltées et gérer le formatage des données (JSON notamment) avant de les envoyer aux serveurs via le réseau mobile 4G.
 - Un module GSM 4G [USR-DR154](https://www.pusr.com/products/Lipstick-Size-4G-Modem.html) qui permettra de communiquer avec le serveur web. (Actuellement utilisé).
 - Un module GSM 4G[WH-LTE-7S1-E](https://www.pusr.com/products/LTE-Cat-1-module.html) qui a été ecarté du projet car il ne fonctionnait pas correctement.
