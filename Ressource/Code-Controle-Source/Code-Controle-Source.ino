@@ -104,27 +104,32 @@ void setup()
 
    //configuration de l'interruption pour débitmétre
    attachInterrupt(digitalPinToInterrupt(FLOW_PIN), Flow, RISING); // On met en place l'interruption
-   refTime = millis();// On initialise le temps de mesure  
+   refTime = millis();// On initialise le temps de mesure2.0
 }
 
 
 void loop ()
 {  
+
+    digitalWrite(TRIG, LOW);           // >>> FIX SONAR
+    delayMicroseconds(5);              // >>> FIX SONAR
+
    //Génération impulsions pour mesure de la distance 
    digitalWrite(TRIG, HIGH); // génération de l'impulsion Trig de 10 μs
    delayMicroseconds(10);
    digitalWrite(TRIG, LOW);
    delayMicroseconds(60);
-   lecture_echo = pulseIn(ECHO, HIGH); // lecture de la longueur temporelle de l'impulsion Echo
+
+   lecture_echo = pulseIn(ECHO, HIGH, SONAR_TIMEOUT_US);
 
    if (lecture_echo > 0) {
         distance = (lecture_echo / 2.0) * 0.034;
         if (distance <= DISTANCE_ALERTE) {
             alerteNiveauHaut = true;
-            Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
+            //Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
         } else if (distance > (DISTANCE_ALERTE + MARGE_HYSTERESIS)) {
               alerteNiveauHaut = false;
-              Serial.println("Info : Niveau d'eau revenu à la normale.");
+              //Serial.println("Info : Niveau d'eau revenu à la normale.");
         }
     } else {
         distance = -1.0; // Erreur de lecture
@@ -146,17 +151,18 @@ void loop ()
    //     }
    // }
 
-   currentTime = millis();
+    delay(50); 
+    currentTime = millis();
    // toutes les secondes on mesure la fréquence
-   if(currentTime >= (refTime + 1000))
-   {
-    refTime = currentTime; // On met à jour le temps de référence 
-    if(flow_freq != 0){
+    if(currentTime >= (refTime + 1000))
+    {
+        refTime = currentTime; // On met à jour le temps de référence 
+        if(flow_freq != 0){
       //Serial.println("Entrer dans boucle");
       // On sait que  F=5.5 * Q (L / Min). Donc Q = F/5.5 
-      debit = ( (float) flow_freq / 5.5);
+            debit = ( (float) flow_freq / 5.5);
 
-      flow_freq = 0; // on remet à zéro le compteur
+            flow_freq = 0; // on remet à zéro le compteur
       //Serial.print("Debit : ");
       //Serial.print(debit, 2 ); // On affiche le débit avec 2 décimal
       //Serial.println(" L/min");
@@ -169,11 +175,11 @@ void loop ()
 
     unsigned long currentMillis = millis();
    // Vérifier si la différence est supérieure à l'intervalle
-  if (currentMillis - previousMillis >= interval) {
+    if (currentMillis - previousMillis >= interval) {
     // On met à jour le marqueur de temps immédiatement
-    previousMillis = currentMillis;
+        previousMillis = currentMillis;
 
     // --- Action à exécuter toutes les 10 secondes ---
-    sendData();
+        sendData();
   }
 }
