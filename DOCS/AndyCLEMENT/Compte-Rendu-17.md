@@ -1,21 +1,8 @@
-# Compte Rendu Semaine 13 / W15 (10/04/2026)
+# Compte Rendu Semaine 14 / W17 (24/04/2026)
 
-## Test de la mis à jour 
+## Concevoir le tuto pour la configuration du module GSM USR-DR154
 
-Après avoir demandé la mise à jour au support USRiOt, le module USR-DR154 à été mis à jour avec succès. Nous avons essayer la configuration avec la commande AT+SSLCFG=ON et en effectuant les commandes AT suivantes: 
-// toute ces commandes sont décrte dans la documentation du module USR-DR154
-AT+WKMOD=MQTT,NOR // On configure le module pour utiliser le protocole MQTT
-AT+MQTTSVR = adresseServeur.hivemq.cloud,8883
-AT+MQTTUSER = NomUtilisateurDuBroker
-AT+MQTTPSW = MotDePasseDuBroker
-AT+MQTTCID = IdentifiantClient
-AT+SSLEN = ON
-AT+SSLCFG = ON
-AT+SSLAUTH = NONE // On desactive l'authentification SSL par le serveur
-
-Après cette configuration, nous avons réussi à connecter le module USR-DR154 au broker MQTT HiveMQ Cloud.Nous avons publié un message de test sur un topic source/mesures et nous avons pu le recevoir/envoyer des messages avec succès.
-
-Cette partie du projet était cruciale pour la suite du projet, car elle nous a permis de valider que le module USR-DR154 pouvait se connecter au broker MQTT et envoyer des données. Après des semaines de problème, nous pouvons avancer plus vite sur le projet et avancer sur l'envoie de la trame JSON au broker MQTT.
+Puisqu'aujourd'hui, est la dernère séance de l'année, nous avons décidé de concevoir un tutoriel pour expliquer comment configurer le module GSM USR-DR154 pour que le groupe suivant puisse continuer le projet et avancer plus vite. Le tutoriel explique comment configurer le module GSM pour qu'il puisse se connecter au broker MQTT HiveMQ Cloud et envoyer des données. Le tutoriel est disponible sur le dépôt GitHub du projet, dans le dossier Ressource/tuto.
 
 ## Intégration du format JSON dans l'ESP32
 
