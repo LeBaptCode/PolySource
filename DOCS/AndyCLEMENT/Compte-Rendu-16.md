@@ -1,8 +1,8 @@
 # Compte Rendu Semaine 13 / W15 (10/04/2026)
 
-## Test de la mis à jour 
+## Test de la mis à jour
 
-Après avoir demandé la mise à jour au support USRiOt, le module USR-DR154 à été mis à jour avec succès. Nous avons essayer la configuration avec la commande AT+SSLCFG=ON et en effectuant les commandes AT suivantes: 
+Après avoir demandé la mise à jour au support USRiOt, le module USR-DR154 à été mis à jour avec succès. Nous avons essayer la configuration avec la commande AT+SSLCFG=ON et en effectuant les commandes AT suivantes:
 // toute ces commandes sont décrte dans la documentation du module USR-DR154
 AT+WKMOD=MQTT,NOR // On configure le module pour utiliser le protocole MQTT
 AT+MQTTSVR = adresseServeur.hivemq.cloud,8883
@@ -19,7 +19,7 @@ Cette partie du projet était cruciale pour la suite du projet, car elle nous a 
 
 ## Intégration du format JSON dans l'ESP32
 
-Une autre tâche effctué et la mise à jour du code pour que l'ESP32 puisse convertir les donées reçues du débitmètre/sonar en format JSON et les envoyer au broker MQTT. Nous avons utilisé la bibliothèque ArduinoJson by Benoit Blanchon pour la convertion. Cependant. Avec des exemples sur internet, j'ai réussi à comprendre comment utiliser la bibliothèque pour créer un objet JSON, y ajouter des données et le convertir en chaîne de caractères pour l'envoyer au broker MQTT. 
+Une autre tâche effctué et la mise à jour du code pour que l'ESP32 puisse convertir les donées reçues du débitmètre/sonar en format JSON et les envoyer au broker MQTT. Nous avons utilisé la bibliothèque ArduinoJson by Benoit Blanchon pour la convertion. Cependant. Avec des exemples sur internet, j'ai réussi à comprendre comment utiliser la bibliothèque pour créer un objet JSON, y ajouter des données et le convertir en chaîne de caractères pour l'envoyer au broker MQTT.
 Pour que les données s'affiche bien dans le moniteur web, il faut que la trame JSON contionne le timestamp. Cependant l'ESP32 ne possède pas de RTC (Real Time Clock) intégré. Pour relever le Timestamp il existe plusieurs solutions, comme utiliser un module RTC externe, un serveur NTP (Network Time Protocol) mais cela nécessite une connexion internet. La solution choisie est d'utiliser la commande AT+CCLK? du module USR-DR154 pour récupérer l'heure actuelle du module, qui est synchronisée avec le réseau GSM. Puis d'utiliser la fonction millis() de l'ESP32 pour calculer le timestamp en millisecondes depuis le démarrage de l'ESP32. En combinant ces deux informations, nous pouvons obtenir un timestamp précis pour les données envoyées au broker MQTT.
 
 Le code mise à jour est disponible sur le dépôt GitHub du projet, dans le dossier Ressource/code.
