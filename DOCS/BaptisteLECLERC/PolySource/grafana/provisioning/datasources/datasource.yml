@@ -1,0 +1,16 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB_V2
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      version: Flux
+      organization: PolySource
+      defaultBucket: polysource_data
+      tlsSkipVerify: true
+    secureJsonData:
+      # On utilise la variable d'environnement définie dans le docker-compose
+      token: $INFLUX_TOKEN
+    editable: true

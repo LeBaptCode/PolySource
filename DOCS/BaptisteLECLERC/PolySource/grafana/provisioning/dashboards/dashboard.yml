@@ -1,0 +1,13 @@
+apiVersion: 1
+
+providers:
+  - name: 'Dashboards PolySource'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    editable: true
+    updateIntervalSeconds: 10
+    options:
+      # C'est le chemin à l'intérieur du conteneur Docker
+      path: /etc/grafana/provisioning/dashboards

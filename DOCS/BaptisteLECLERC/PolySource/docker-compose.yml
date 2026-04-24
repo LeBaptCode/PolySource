@@ -4,6 +4,14 @@ services:
     container_name: influxdb
     ports:
       - "8086:8086"
+    environment:
+      # InfluxDB lit les variables d'environnement depuis le .env
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUX_ADMIN_USER}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_ADMIN_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=PolySource
+      - DOCKER_INFLUXDB_INIT_BUCKET=polysource_data
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_ADMIN_TOKEN}
     volumes:
       - ./influxdb_data:/var/lib/influxdb2
     restart: always
@@ -14,13 +22,23 @@ services:
     user: "472:472"
     ports:
       - "3000:3000"
+    environment:
+      # On passe le token à Grafana pour le provisioning
+      - INFLUX_TOKEN=${INFLUX_ADMIN_TOKEN}
     volumes:
       - ./grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
     restart: always
 
   telegraf:
     image: telegraf
     container_name: telegraf
+    environment:
+      # On passe les variables à Telegraf pour sa configuration
+      - INFLUX_TOKEN=${INFLUX_ADMIN_TOKEN}
+      - MQTT_USER=${MQTT_USER}
+      - MQTT_PASSWORD=${MQTT_PASSWORD}
+      - MQTT_SERVER=${MQTT_SERVER}
     volumes:
       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
