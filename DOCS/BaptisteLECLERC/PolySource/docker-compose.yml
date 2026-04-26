@@ -25,6 +25,9 @@ services:
     environment:
       # On passe le token à Grafana pour le provisioning
       - INFLUX_TOKEN=${INFLUX_ADMIN_TOKEN}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_INSTALL_PLUGINS=volkovlabs-echarts-panel
     volumes:
       - ./grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro

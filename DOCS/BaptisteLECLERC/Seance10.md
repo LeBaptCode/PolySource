@@ -23,7 +23,7 @@ Exemple de message avec données simulées :
     "water_level_cm" : 45.2, 
     "flow_rate_l_min" : 12.5,
     "battery_percent" : 88,
-    "overflow" : false
+    "overflow" : 0
 }
 ```
 
