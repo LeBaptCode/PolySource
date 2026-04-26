@@ -33,7 +33,7 @@ mkdir -p $DEST_DIR
 echo "Copie de la configuration actuelle vers $DEST_DIR..."
 
 # Copie de tous les fichiers du dossier courant vers /opt/tig_stack
-cp -R ./* $DEST_DIR/
+cp -a ./. $DEST_DIR/
 
 # Ajustement des permissions pour éviter les problèmes de droits avec les volumes Docker
 if [ -n "$SUDO_USER" ]; then
@@ -46,19 +46,24 @@ if [ -d "$DEST_DIR/influxdb_data" ] && [ "$(ls -A $DEST_DIR/influxdb_data 2>/dev
     echo "✔️  Une base de données InfluxDB existante a été détectée."
     echo "   -> Opération ignorée : vos données et votre historique sont conservés."
 else
-    echo "🧹 Première installation détectée : préparation du dossier pour l'auto-configuration..."
+    echo "Première installation détectée : préparation du dossier pour l'auto-configuration..."
     rm -rf $DEST_DIR/influxdb_data/* 2>/dev/null
 fi
 
 echo "=== 5. Démarrage de la stack TIG ==="
 cd $DEST_DIR
 
+mkdir -p $DEST_DIR/grafana_data
+chown -R 472:472 $DEST_DIR/grafana_data
+
 # Utilisation de docker compose (plugin V2)
 docker compose up -d
 
+IP_LOCAL=$(hostname -I | awk '{print $1}')
+
 echo "====================================================="
 echo "✅ Déploiement terminé avec succès !"
-echo "📊 Grafana sera disponible sur : http://<IP_RASPBERRY>:3000"
-echo "🗄️  InfluxDB sera disponible sur : http://<IP_RASPBERRY>:8086"
+echo "Grafana sera disponible sur : http://$IP_LOCAL:3000"
+echo "InfluxDB sera disponible sur : http://$IP_LOCAL:8086"
 echo "⚠️ Note: Si c'est la première installation de Docker, vous devrez vous déconnecter/reconnecter de la session SSH pour utiliser 'docker' sans sudo."
 echo "====================================================="
