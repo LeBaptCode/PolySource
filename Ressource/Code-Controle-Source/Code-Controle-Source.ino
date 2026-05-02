@@ -126,30 +126,12 @@ void loop ()
         distance = (lecture_echo / 2.0) * 0.034;
         if (distance <= DISTANCE_ALERTE) {
             alerteNiveauHaut = true;
-            //Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
         } else if (distance > (DISTANCE_ALERTE + MARGE_HYSTERESIS)) {
               alerteNiveauHaut = false;
-              //Serial.println("Info : Niveau d'eau revenu à la normale.");
         }
     } else {
         distance = -1.0; // Erreur de lecture
     }
-
-   // --- LOGIQUE D'ALERTE NIVEAU HAUT ---
-   // Si la distance devient inférieure au seuil, le niveau est trop haut
-   //if (distance > 0 && distance <= DISTANCE_ALERTE) {
-   //     if (!alerteNiveauHaut) {
-   //         Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
-   //         alerteNiveauHaut = true;
-   //     }
-   //} 
-   // On réinitialise l'alerte uniquement si l'eau redescend sous le seuil + marge
-   //else if (distance > (DISTANCE_ALERTE + MARGE_HYSTERESIS)) {
-   //     if (alerteNiveauHaut) {
-   //         Serial.println("Info : Niveau d'eau revenu à la normale.");
-   //         alerteNiveauHaut = false;
-   //     }
-   // }
 
     delay(50); 
     currentTime = millis();
@@ -158,14 +140,10 @@ void loop ()
     {
         refTime = currentTime; // On met à jour le temps de référence 
         if(flow_freq != 0){
-      //Serial.println("Entrer dans boucle");
       // On sait que  F=5.5 * Q (L / Min). Donc Q = F/5.5 
             debit = ( (float) flow_freq / 5.5);
 
             flow_freq = 0; // on remet à zéro le compteur
-      //Serial.print("Debit : ");
-      //Serial.print(debit, 2 ); // On affiche le débit avec 2 décimal
-      //Serial.println(" L/min");
     }
     else {
       //Serial.println(" Debit = 0 L/min ");
@@ -178,8 +156,6 @@ void loop ()
     if (currentMillis - previousMillis >= interval) {
     // On met à jour le marqueur de temps immédiatement
         previousMillis = currentMillis;
-
-    // --- Action à exécuter toutes les 10 secondes ---
-        sendData();
+        sendData(); //envoi des données
   }
 }
