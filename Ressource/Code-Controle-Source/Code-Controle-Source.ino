@@ -1,13 +1,12 @@
 #include <ArduinoJson.h>
 #include <time.h>
-//Code de mesure du debit + sonar
+//Code de mesure du debitmètre + capteur de distance à ultrason
 //On déclare les variables 
 
 #define MODEM_TX_PIN 13
 #define MODEM_RX_PIN 12
 #define MODEM_BAUD_RATE 115200
 
-//------- Variable pour sonar
 #define TRIG 35
 #define ECHO 34
 #define SONAR_TIMEOUT_US 500000
@@ -88,7 +87,7 @@ long getUnixTimestampGSM() {
 
 void setup()
 {
-   //Initialisation des ports pour débitmétre
+   //Initialisation des ports pour débitmètre
    pinMode(FLOW_PIN, INPUT);
    digitalWrite(FLOW_PIN, HIGH); // On initialise la valeur du port
 
@@ -111,8 +110,8 @@ void setup()
 void loop ()
 {  
 
-    digitalWrite(TRIG, LOW);           // >>> FIX SONAR
-    delayMicroseconds(5);              // >>> FIX SONAR
+    digitalWrite(TRIG, LOW);           // >>> FIX bruit
+    delayMicroseconds(5);              // >>> FIX
 
    //Génération impulsions pour mesure de la distance 
    digitalWrite(TRIG, HIGH); // génération de l'impulsion Trig de 10 μs
