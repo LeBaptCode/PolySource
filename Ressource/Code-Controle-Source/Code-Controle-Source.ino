@@ -1,13 +1,12 @@
 #include <ArduinoJson.h>
 #include <time.h>
-//Code de mesure du debit + sonar
+//Code de mesure du debitmètre + capteur de distance à ultrason
 //On déclare les variables 
 
 #define MODEM_TX_PIN 13
 #define MODEM_RX_PIN 12
 #define MODEM_BAUD_RATE 115200
 
-//------- Variable pour sonar
 #define TRIG 35
 #define ECHO 34
 #define SONAR_TIMEOUT_US 500000
@@ -88,7 +87,7 @@ long getUnixTimestampGSM() {
 
 void setup()
 {
-   //Initialisation des ports pour débitmétre
+   //Initialisation des ports pour débitmètre
    pinMode(FLOW_PIN, INPUT);
    digitalWrite(FLOW_PIN, HIGH); // On initialise la valeur du port
 
@@ -111,8 +110,8 @@ void setup()
 void loop ()
 {  
 
-    digitalWrite(TRIG, LOW);           // >>> FIX SONAR
-    delayMicroseconds(5);              // >>> FIX SONAR
+    digitalWrite(TRIG, LOW);           // >>> FIX bruit
+    delayMicroseconds(5);              // >>> FIX
 
    //Génération impulsions pour mesure de la distance 
    digitalWrite(TRIG, HIGH); // génération de l'impulsion Trig de 10 μs
@@ -126,30 +125,12 @@ void loop ()
         distance = (lecture_echo / 2.0) * 0.034;
         if (distance <= DISTANCE_ALERTE) {
             alerteNiveauHaut = true;
-            //Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
         } else if (distance > (DISTANCE_ALERTE + MARGE_HYSTERESIS)) {
               alerteNiveauHaut = false;
-              //Serial.println("Info : Niveau d'eau revenu à la normale.");
         }
     } else {
         distance = -1.0; // Erreur de lecture
     }
-
-   // --- LOGIQUE D'ALERTE NIVEAU HAUT ---
-   // Si la distance devient inférieure au seuil, le niveau est trop haut
-   //if (distance > 0 && distance <= DISTANCE_ALERTE) {
-   //     if (!alerteNiveauHaut) {
-   //         Serial.println("!!! ATTENTION : NIVEAU D'EAU CRITIQUE !!!");
-   //         alerteNiveauHaut = true;
-   //     }
-   //} 
-   // On réinitialise l'alerte uniquement si l'eau redescend sous le seuil + marge
-   //else if (distance > (DISTANCE_ALERTE + MARGE_HYSTERESIS)) {
-   //     if (alerteNiveauHaut) {
-   //         Serial.println("Info : Niveau d'eau revenu à la normale.");
-   //         alerteNiveauHaut = false;
-   //     }
-   // }
 
     delay(50); 
     currentTime = millis();
@@ -158,14 +139,10 @@ void loop ()
     {
         refTime = currentTime; // On met à jour le temps de référence 
         if(flow_freq != 0){
-      //Serial.println("Entrer dans boucle");
       // On sait que  F=5.5 * Q (L / Min). Donc Q = F/5.5 
             debit = ( (float) flow_freq / 5.5);
 
             flow_freq = 0; // on remet à zéro le compteur
-      //Serial.print("Debit : ");
-      //Serial.print(debit, 2 ); // On affiche le débit avec 2 décimal
-      //Serial.println(" L/min");
     }
     else {
       //Serial.println(" Debit = 0 L/min ");
@@ -178,8 +155,6 @@ void loop ()
     if (currentMillis - previousMillis >= interval) {
     // On met à jour le marqueur de temps immédiatement
         previousMillis = currentMillis;
-
-    // --- Action à exécuter toutes les 10 secondes ---
-        sendData();
+        sendData(); //envoi des données
   }
 }
